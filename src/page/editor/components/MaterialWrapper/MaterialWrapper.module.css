@@ -1,0 +1,12 @@
+.verticalSegmented {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 根据需求调整对齐方式 */
+    height: auto; /* 适配内容的高度 */
+}
+
+.segmentedItem {
+    width: 100%; /* 使每个项占满整个宽度 */
+    text-align: left; /* 文本左对齐 */
+    margin-bottom: 8px; /* 项目之间的间距 */
+}
