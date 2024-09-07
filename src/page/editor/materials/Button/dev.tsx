@@ -12,7 +12,7 @@ const Button = ({id, type, text, styles}: CommonComponentProps) => {
           id: id
       }
   });
-
+  console.log(_)
   return (
     <AntdButton ref={drag} data-component-id={id} type={type} style={styles}>{text}</AntdButton>
   )

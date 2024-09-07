@@ -33,7 +33,7 @@ export interface CommonComponentProps1 extends CommonComponentProps {
 }
 
 function Yuancheng({ id, children, title, styles, text }: CommonComponentProps1) {
-  const { canDrop, drop } = useMaterailDrop(['Button', 'Container', 'Table', 'Form'], id);
+  const {  drop } = useMaterailDrop(['Button', 'Container', 'Table', 'Form'], id);
   const [Component, setComponent] = useState<any>(null);
 
   useEffect(() => {

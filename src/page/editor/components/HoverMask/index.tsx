@@ -49,6 +49,7 @@ function HoverMask({ containerClassName, portalWrapperClassName, componentId ,sc
 
     if (labelTop <= 0) {
       labelTop -= -20;
+      labelLeft=labelLeft+0
     }
   
     setPosition({

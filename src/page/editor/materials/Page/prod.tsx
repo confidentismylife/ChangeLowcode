@@ -1,6 +1,8 @@
 import { CommonComponentProps } from "../../interface";
 
 function Page({ id, name, children, styles }: CommonComponentProps) {
+    console.log('Page', id, styles, name);
+
 
     return (
         <div

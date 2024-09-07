@@ -1,8 +1,9 @@
-import LowcodeEditor from './editor/';
-import PlayLayout from './page/layout/layout';
+
+import { RouterProvider } from 'react-router-dom';
+import router from './router';  // 导入定义的路由
 function App() {
   return (
-    <PlayLayout/>
+    <RouterProvider router={router} />
   )
 }
 

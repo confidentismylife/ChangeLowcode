@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useComponentConfigStore } from "../../stores/component-config";
 import { MaterialItem } from "../MaterialItem";
-import { useAddRemoteComponentConfig } from "../../hooks/useAddRemoteComponentConfig"; // 引入自定义 Hook
+
 
 export function Material() {
     const { componentConfig } = useComponentConfigStore();

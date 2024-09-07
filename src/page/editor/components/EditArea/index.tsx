@@ -53,10 +53,10 @@ export function EditArea() {
 
     const handleClick: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
-        debugger
+    
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
-            debugger
+     
             const componentId = ele.dataset?.componentId;
             if (componentId) {
 

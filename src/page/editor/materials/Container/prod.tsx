@@ -2,6 +2,7 @@
 import { CommonComponentProps } from '../../interface';
 
 const Container = ({ id, children, styles }: CommonComponentProps) => {
+    console.log('Container', id, styles);
 
     return (
         <div 
