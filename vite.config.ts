@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', // 确保 base 路径正确
+  base: '/ChangeLowcode/', // 确保 base 路径正确
   build: {
     outDir: 'dist', // 确保输出目录正确
     assetsDir: 'assets', // 确保资源目录正确
