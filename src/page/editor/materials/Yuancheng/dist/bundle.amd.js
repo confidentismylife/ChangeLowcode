@@ -1,0 +1,1 @@
+define(["exports","react"],(function(e,t){"use strict";e.Test=function({text:e,id:o}){return t.useEffect((()=>{console.log("test",e,o)}),[]),t.createElement("div",{"data-component-id":o,style:{borderRadius:10,border:2}},e||"选中的文本")},e.Two=function(){return t.createElement("div",{style:{width:"20px",backgroundColor:"lightred",color:"white"}},"12331312312313")}}));

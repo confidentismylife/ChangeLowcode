@@ -1,0 +1,1 @@
+"use strict";var e=require("react");exports.Test=function({text:t,id:r}){return e.useEffect((()=>{console.log("test",t,r)}),[]),e.createElement("div",{"data-component-id":r,style:{borderRadius:10,border:2}},t||"选中的文本")},exports.Two=function(){return e.createElement("div",{style:{width:"20px",backgroundColor:"lightred",color:"white"}},"12331312312313")};

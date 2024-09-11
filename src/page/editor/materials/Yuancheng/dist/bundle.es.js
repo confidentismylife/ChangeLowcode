@@ -1,0 +1,1 @@
+import e,{useEffect as t}from"react";function o({text:o,id:r}){return t((()=>{console.log("test",o,r)}),[]),e.createElement("div",{"data-component-id":r,style:{borderRadius:10,border:2}},o||"选中的文本")}function r(){return e.createElement("div",{style:{width:"20px",backgroundColor:"lightred",color:"white"}},"12331312312313")}export{o as Test,r as Two};
