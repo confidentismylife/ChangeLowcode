@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Layout, Menu, MenuProps } from 'antd';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useComponentsShow } from '../editor/stores/component-show';
 import { Preview } from './preivew'; // 确保 Preview 组件导入正确
 import { Component } from "../editor/stores/components";
@@ -10,9 +10,9 @@ export default function LayputPlay() {
   const { componentShow } = useComponentsShow();
   const [items3, setItems3] = useState<MenuProps['items']>([]);
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
-  const [selectedKey, setSelectedKey] = useState<string>(); // 当前选中的 key
+  const [selectedKey, setSelectedKey] = useState<string>(''); // 当前选中的 key
   const navigate = useNavigate();
-  const [params] = useSearchParams();
+
 
   useEffect(() => {
     const updatedItems3 = componentShow.map((item) => ({

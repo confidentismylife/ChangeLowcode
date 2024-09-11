@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware'; // 导入 persist 中间件
 import { CSSProperties } from 'react';
-import cloneDeep from 'lodash/cloneDeep';  // 导入 lodash 的 cloneDeep
+import cloneDeep from 'lodash/cloneDeep';
 
 interface Component {
     id: number;
@@ -12,9 +13,6 @@ interface Component {
     parentId?: number;
     uindex?: string|number;
     project?: string|number;
-
-
-
 }
 
 interface ShowMessages {
@@ -22,22 +20,25 @@ interface ShowMessages {
     addShowMessage: (newComponent: Component) => void;
 }
 
-export const useComponentsShow = create<ShowMessages>((set) => ({
-    componentShow: [],
+export const useComponentsShow = create<ShowMessages>()(
+  persist(
+    (set) => ({
+      componentShow: [],
 
-    addShowMessage: (newComponent: Component) =>
+      addShowMessage: (newComponent: Component) =>
         set((state) => {
-            console.log('newComponent', newComponent);
-            console.log('state', state);
+          console.log('newComponent', newComponent);
+          console.log('state', state);
 
-            // 使用 lodash 的 cloneDeep 进行深拷贝
-            const newComp = cloneDeep(newComponent);
+          const newComp = cloneDeep(newComponent); // 深拷贝
 
-            return {
-                componentShow: [
-                    ...state.componentShow,
-                    newComp  // 使用深拷贝后的对象
-                ],
-            };
+          return {
+            componentShow: [...state.componentShow, newComp],
+          };
         }),
-}));
+    }),
+    {
+      name: 'components-show-storage', // 存储在 localStorage 中的键名
+    }
+  )
+);
