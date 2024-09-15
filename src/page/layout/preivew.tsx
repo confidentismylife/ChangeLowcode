@@ -78,7 +78,11 @@ export function Preview({ components }: PreviewProps) {  // 解构 props
         });
     }
 
-    return <div>
-        {renderComponents(components)}
-    </div>;
+    return (
+        <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
+            <div className="bg-white p-4 rounded-lg shadow-md">
+                {renderComponents(components)}
+            </div>
+        </div>
+    );
 }

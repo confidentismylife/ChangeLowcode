@@ -11,7 +11,7 @@ export interface ItemType {
 export function useMaterailDrop(accept: string[], id: number) {
     const { addComponent, deleteComponent, components } = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
-
+  
     const [{ canDrop }, drop] = useDrop(() => ({
         accept,
         drop: (item: ItemType, monitor) => {
@@ -28,7 +28,8 @@ export function useMaterailDrop(accept: string[], id: number) {
               addComponent(component, id)
             } else {
               const config = componentConfig[item.type];
-
+              console.log('config          ')
+              console.log(item)
               addComponent({
                 id: new Date().getTime(),
                 name: item.type,

@@ -16,11 +16,8 @@ export const useAddRemoteComponentConfig = (url: string) => {
             const component = await loadRemoteComponent(url);
             if (component) {
                 Object.keys(component).forEach(key => {
-
                     // 添加组件到组件列表
                     addComponentDrop(key);
-
-
                     // 创建组件配置
                     const componentConfig: ComponentConfig = {
                         name: key,
@@ -48,7 +45,8 @@ export const useAddRemoteComponentConfig = (url: string) => {
                             }
                         ],
                     };
-
+                    console.log(1233123)
+                    console.log(componentConfig.dev)
                     // 注册组件到 Zustand 的 componentConfig store 中
                     useComponentConfigStore.getState().registerComponent(key, componentConfig);
                 });

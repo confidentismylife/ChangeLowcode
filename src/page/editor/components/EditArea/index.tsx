@@ -92,13 +92,15 @@ export function EditArea() {
     return (
         <div
             ref={editAreaRef}
-            className="h-[100%] edit-area overflow-auto"
+            className="h-full edit-area overflow-auto bg-gray-100 p-4 rounded-lg shadow-lg"
             style={{ boxSizing: 'border-box', paddingRight: '17px', paddingBottom: '17px' }}
             onMouseOver={handleMouseOver}
             onMouseLeave={() => setHoverComponentId(undefined)}
             onClick={handleClick}
         >
-            {renderComponents(components)}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+                {renderComponents(components)}
+            </div>
             {hoverComponentId && hoverComponentId !== curComponentId && (
                 <HoverMask
                     portalWrapperClassName="portal-wrapper"
@@ -114,7 +116,6 @@ export function EditArea() {
                     containerClassName="edit-area"
                     componentId={curComponentId}
                     scrollToplength={scrollToplength}
-
                 />
             )}
             <div className="portal-wrapper"></div>

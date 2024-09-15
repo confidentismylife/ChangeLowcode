@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useComponentsShow } from '../editor/stores/component-show';
 import { Preview } from './preivew'; // 确保 Preview 组件导入正确
 import { Component } from "../editor/stores/components";
+
 const { Header, Content, Sider } = Layout;
 
 export default function LayputPlay() {
@@ -12,7 +13,6 @@ export default function LayputPlay() {
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
   const [selectedKey, setSelectedKey] = useState<string>(''); // 当前选中的 key
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const updatedItems3 = componentShow.map((item) => ({
@@ -39,19 +39,19 @@ export default function LayputPlay() {
 
   return (
     <Layout className="h-screen">
-      <Header className="flex items-center bg-gray-900 text-white shadow-lg">
-        <div className="text-xl font-semibold">ChangeLowCode</div>
+      <Header className="flex items-center justify-between bg-gray-900 text-white shadow-lg">
+        <div className="text-2xl font-bold">ChangeLowCode</div>
         <Button
           type='primary'
-          className='ml-auto'
+          className='ml-auto px-6 py-2 transition-all duration-300 ease-in-out hover:bg-blue-600'
           onClick={() => { navigate('/edit'); }}
-          style={{ marginLeft: 'auto', backgroundColor: '#1890ff', borderColor: '#1890ff' }}
+          style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }}
         >
           新添
         </Button>
       </Header>
       <Layout>
-        <Sider width={250} className="bg-gray-100">
+        <Sider width={250} className="bg-gray-100 shadow-lg">
           <Menu
             mode="inline"
             selectedKeys={[selectedKey]}  // 使用 selectedKeys 控制选中状态
@@ -61,8 +61,8 @@ export default function LayputPlay() {
             style={{ backgroundColor: '#f5f5f5' }}
           />
         </Sider>
-        <Layout className="p-6">
-          <Content className="p-6 bg-white rounded-lg shadow-md">
+        <Layout className="p-6 bg-gray-100">
+          <Content className="p-6 bg-white rounded-lg shadow-lg overflow-auto">
             {selectedComponent ? (
               <Preview components={[selectedComponent]} />
             ) : (

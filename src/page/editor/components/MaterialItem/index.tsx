@@ -12,7 +12,7 @@ export function MaterialItem(props: MaterialItemProps) {
         type: name,
         item: { type: name },
     });
-    console.log(_)
+
     return (
         <div
             ref={drag}
