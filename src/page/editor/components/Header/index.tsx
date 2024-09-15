@@ -8,22 +8,31 @@ import { useComponentsShow } from '../../stores/component-show';
 
 export function Header() {
     const { mode, setMode, setCurComponentId, components } = useComponetsStore();
-    const [modalVisible, setModalVisible] = useState(false); // 控制 Modal 的显示
-    const [inputUrl, setInputUrl] = useState(''); // 存储用户输入的 URL
-    const [remoteUrl, setRemoteUrl] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component@1.0.5/dist/bundle.umd.js'); // 初始远程 URL
+    const [modalVisibleReact, setModalVisibleReact] = useState(false); // 控制 React Modal 的显示
+    const [modalVisibleVue, setModalVisibleVue] = useState(false); // 控制 Vue Modal 的显示
+    const [inputUrlReact, setInputUrlReact] = useState(''); // 存储用户输入的 React 组件 URL
+    const [inputUrlVue, setInputUrlVue] = useState(''); // 存储用户输入的 Vue 组件 URL
+    const [remoteUrlReact, setRemoteUrlReact] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component@1.0.5/dist/bundle.umd.js'); // React 初始远程 URL
+    const [remoteUrlVue, setRemoteUrlVue] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js'); // Vue 初始远程 URL
     const navigate = useNavigate();
     const { addShowMessage } = useComponentsShow();
     const [locodeVisible, setLocodeVisible] = useState(false);
-    const [name, setName] = useState(''); // 存储用户输入的 URL
+    const [name, setName] = useState(''); // 存储用户输入的名称
 
-    // 调用自定义 Hook 加载远程组件
-    useAddRemoteComponentConfig(remoteUrl);
-    // useAddRemoteComponentConfigVue('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js')
+    // 调用自定义 Hook 分别加载远程 React 和 Vue 组件
+    useAddRemoteComponentConfig(remoteUrlReact);
+    useAddRemoteComponentConfigVue(remoteUrlVue);
 
-    // 处理用户输入的 URL 并加载远程组件
-    const handleLoadRemoteComponent = () => {
-        setRemoteUrl(inputUrl); // 设置远程 URL
-        setModalVisible(false); // 关闭 Modal
+    // 处理 React 组件的 URL 输入并加载远程组件
+    const handleLoadRemoteReactComponent = () => {
+        setRemoteUrlReact(inputUrlReact); // 设置远程 React URL
+        setModalVisibleReact(false); // 关闭 React Modal
+    };
+
+    // 处理 Vue 组件的 URL 输入并加载远程组件
+    const handleLoadRemoteVueComponent = () => {
+        setRemoteUrlVue(inputUrlVue); // 设置远程 Vue URL
+        setModalVisibleVue(false); // 关闭 Vue Modal
     };
 
     const slowhandel = () => {
@@ -34,13 +43,10 @@ export function Header() {
             project: name,
         };
 
-        // 将组件对象转换为 JSON 字符串
-
         // 添加组件到状态管理
         addShowMessage(componentWithId);
         setLocodeVisible(false);
-        // 使用 URL 编码的 JSON 字符串进行导航
-        navigate(`/`);
+        navigate(`/`); // 导航回首页
     };
 
     return (
@@ -70,36 +76,63 @@ export function Header() {
                             退出预览
                         </Button>
                     )}
-                    {/* 加载远程组件按钮 */}
+                    {/* 加载远程 React 组件按钮 */}
                     <Button
                         type='primary'
-                        onClick={() => setModalVisible(true)} // 点击按钮显示 Modal
+                        onClick={() => setModalVisibleReact(true)} // 点击按钮显示 React Modal
                         className='px-4 py-2'
                     >
-                        加载远程组件
+                        加载远程 React 组件
+                    </Button>
+
+                    {/* 加载远程 Vue 组件按钮 */}
+                    <Button
+                        type='primary'
+                        onClick={() => setModalVisibleVue(true)} // 点击按钮显示 Vue Modal
+                        className='px-4 py-2'
+                    >
+                        加载远程 Vue 组件
                     </Button>
                 </Space>
             </div>
 
-            {/* Modal 弹窗 */}
+            {/* React Modal 弹窗 */}
             <Modal
-                title="输入远程组件 URL"
-                open={modalVisible}
-                onOk={handleLoadRemoteComponent} // 确认按钮点击时加载远程组件
-                onCancel={() => setModalVisible(false)} // 取消时关闭 Modal
+                title="输入远程 React 组件 URL"
+                open={modalVisibleReact}
+                onOk={handleLoadRemoteReactComponent} // 确认按钮点击时加载远程 React 组件
+                onCancel={() => setModalVisibleReact(false)} // 取消时关闭 React Modal
                 className='rounded-lg shadow-lg'
             >
                 <Input
-                    placeholder="输入远程组件 URL"
-                    value={inputUrl}
-                    onChange={(e) => setInputUrl(e.target.value)} // 监听输入框变化
+                    placeholder="输入远程 React 组件 URL"
+                    value={inputUrlReact}
+                    onChange={(e) => setInputUrlReact(e.target.value)} // 监听 React URL 输入框变化
                     className='rounded-lg'
                 />
             </Modal>
+
+            {/* Vue Modal 弹窗 */}
+            <Modal
+                title="输入远程 Vue 组件 URL"
+                open={modalVisibleVue}
+                onOk={handleLoadRemoteVueComponent} // 确认按钮点击时加载远程 Vue 组件
+                onCancel={() => setModalVisibleVue(false)} // 取消时关闭 Vue Modal
+                className='rounded-lg shadow-lg'
+            >
+                <Input
+                    placeholder="输入远程 Vue 组件 URL"
+                    value={inputUrlVue}
+                    onChange={(e) => setInputUrlVue(e.target.value)} // 监听 Vue URL 输入框变化
+                    className='rounded-lg'
+                />
+            </Modal>
+
+            {/* 保存低代码 Modal 弹窗 */}
             <Modal
                 title="保存低代码"
                 open={locodeVisible}
-                onOk={slowhandel} // 确认按钮点击时加载远程组件
+                onOk={slowhandel} // 确认按钮点击时保存低代码组件
                 onCancel={() => setLocodeVisible(false)} // 取消时关闭 Modal
                 className='rounded-lg shadow-lg'
             >

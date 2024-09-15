@@ -30,12 +30,18 @@ export function useMaterailDrop(accept: string[], id: number) {
               const config = componentConfig[item.type];
               console.log('config          ')
               console.log(item)
-              addComponent({
-                id: new Date().getTime(),
-                name: item.type,
-                desc: config.desc,
-                props: config.defaultProps
-              }, id)
+
+              // 检查 config 是否存在
+              if (config) {
+                addComponent({
+                  id: new Date().getTime(),
+                  name: item.type,
+                  desc: config.desc,
+                  props: config.defaultProps
+                }, id)
+              } else {
+                console.error(`Component config for type ${item.type} is undefined`);
+              }
             }
         },
         collect: (monitor) => ({
