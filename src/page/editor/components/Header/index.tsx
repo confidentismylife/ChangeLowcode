@@ -21,7 +21,7 @@ export function Header() {
 
     // 调用自定义 Hook 分别加载远程 React 和 Vue 组件
     useAddRemoteComponentConfig(remoteUrlReact);
-    useAddRemoteComponentConfigVue(remoteUrlVue);
+    // useAddRemoteComponentConfigVue(remoteUrlVue);
 
     // 处理 React 组件的 URL 输入并加载远程组件
     const handleLoadRemoteReactComponent = () => {

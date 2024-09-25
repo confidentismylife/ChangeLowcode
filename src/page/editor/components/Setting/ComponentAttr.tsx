@@ -2,7 +2,9 @@ import { Form, Input, Select } from 'antd';
 import { useEffect } from 'react';
 import { ComponentConfig, ComponentSetter, useComponentConfigStore } from '../../stores/component-config';
 import { useComponetsStore } from '../../stores/components';
+import { Space, Typography } from 'antd';
 
+const { Text, Link } = Typography;
 export function ComponentAttr() {
 
   const [form] = Form.useForm();
@@ -25,6 +27,10 @@ export function ComponentAttr() {
       return <Select options={options} />
     } else if (type === 'input') {
       return <Input />
+    }else if(type==='show'){
+      return <Link href='https://ant-design.antgroup.com/components/icon-cn' target="_blank">
+      Ant Design Icon(Link)
+    </Link>
     }
   }
 

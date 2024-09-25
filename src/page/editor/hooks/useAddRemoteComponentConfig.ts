@@ -14,6 +14,7 @@ export const useAddRemoteComponentConfig = (url: string) => {
     useEffect(() => {
         const fetchAndRegisterComponent = async () => {
             const component = await loadRemoteComponent(url);
+
             if (component) {
                 Object.keys(component).forEach(key => {
                     // 添加组件到组件列表

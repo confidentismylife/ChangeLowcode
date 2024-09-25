@@ -17,12 +17,10 @@ export interface ComponentMethodProps {
 }
 
 export function ComponentMethod(props: ComponentMethodProps) {
-
     const { value, onChange} = props;
     const { components, curComponentId } = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
     const [selectedComponent, setSelectedComponent] = useState<Component | null>();
-
     const [curId, setCurId] = useState<number>();
     const [curMethod, setCurMethod] = useState<string>();
 
@@ -30,7 +28,6 @@ export function ComponentMethod(props: ComponentMethodProps) {
         if(value) {
             setCurId(value.componentId)
             setCurMethod(value.method)
-
             setSelectedComponent(getComponentById(value.componentId, components))
         }
     }, [value]);

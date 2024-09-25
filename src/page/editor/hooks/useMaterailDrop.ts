@@ -19,7 +19,8 @@ export function useMaterailDrop(accept: string[], id: number) {
             if (didDrop) {
               return;
             }
-
+            console.log(12313)
+            console.log(item)
             if(item.dragType === 'move') {
               const component = getComponentById(item.id, components)!;
 
@@ -28,11 +29,11 @@ export function useMaterailDrop(accept: string[], id: number) {
               addComponent(component, id)
             } else {
               const config = componentConfig[item.type];
-              console.log('config          ')
-              console.log(item)
-
               // 检查 config 是否存在
               if (config) {
+                console.log(id)
+                console.log('add')
+                console.log(config)
                 addComponent({
                   id: new Date().getTime(),
                   name: item.type,

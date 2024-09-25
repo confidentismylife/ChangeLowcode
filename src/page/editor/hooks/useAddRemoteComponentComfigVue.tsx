@@ -20,6 +20,8 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
             const component = await loadVueAndRemoteComponent(url);
             if (component) {
                 setRemoteComponent(component);
+                console.log(component)
+                console.log(1231233131323)
                 const names = Object.keys(component);
                 setComponentNames(names);
 
@@ -53,12 +55,11 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
                             }
                         ],
                     };
-                    console.log('c')
-                    console.log(componentConfig.dev)
+    
                     // 注册组件到 Zustand 的 componentConfig store 中
                     useComponentConfigStore.getState().registerComponent(key, componentConfig);
                 });
-                console.log('components', components);
+              
             }
         };
 
@@ -78,7 +79,6 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
 
     // Type assertion to ensure it is a valid React component
     const Component = applyVueInReact(remoteComponent[ComponentName]) as React.ComponentType<any>;
-
     // 打印组件名称和 props
     console.log(`Rendering component: ${ComponentName}`, props);
 

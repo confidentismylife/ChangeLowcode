@@ -5,7 +5,6 @@ import useComponentsDrop from "../../stores/components-drop";
 function Page({ id, name, children, styles }: CommonComponentProps) {
     const { components } = useComponentsDrop();
     const {canDrop, drop } = useMaterailDrop([...components], id);
-    console.log('Page', id, name, children, styles);
 
     return (
         <div
