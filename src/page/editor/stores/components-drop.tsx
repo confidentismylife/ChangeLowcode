@@ -9,7 +9,7 @@ interface components {
 const useComponentsDrop = create<components>()(
   persist(
     (set) => ({
-      components: ['Button', 'Container', 'Table', 'Form', 'Yuancheng', 'Modal','Space','Card'],
+      components: ['Button', 'Container', 'Table', 'Form', 'Yuancheng', 'Modal','Space','Card','Text','Image'],
       addComponentDrop: (newComponent: string) =>
         set((state) => ({
           components: [...state.components, newComponent],

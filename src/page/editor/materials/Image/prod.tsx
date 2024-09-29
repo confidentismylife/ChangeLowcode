@@ -79,6 +79,7 @@ const Image = ({
             data-component-id={id}
             ref={imgRef}
             style={mergedStyles}
+          
         >
             <AntdImage
                 src={srcc}

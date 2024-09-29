@@ -19,6 +19,10 @@ import SpaceDev from '../materials/Space/dev';
 import SpaceProd from '../materials/Space/prod';
 import CardDev from '../materials/Card/dev';
 import CardProd from '../materials/Card/prod';
+import TextDev from '../materials/Text/dev';
+import TextProd from '../materials/Text/prod';
+import ImageDev from '../materials/Image/dev';
+import ImageProd from '../materials/Image/prod';
 export interface ComponentSetter {
     name: string;
     label: string;
@@ -463,7 +467,110 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                     type: 'inputNumber',
                 }
             ],
+        },
+        Text:{
+            name:'Text',
+            defaultProps:{},
+            desc:'文本',
+            dev:TextDev,
+            prod:TextProd,
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber',
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber',
+                }
+            ],
+            setter:[
+                {
+                    name: 'text',
+                    label: '文本',
+                    type: 'input',
+                },
+                {
+                    name: 'wrap',
+                    label: '换行',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 修正为布尔值
+                        { label: 'false', value: false }
+                    ]
+                }
+                
+           
+            ]
+        },
+        Image : {
+            name: 'Image',
+            defaultProps: {
+                alt: 'Image',
+                fallback: '',
+                height: 'auto',
+                placeholder: null,
+                preview: true,
+                src: '',
+                width: 'auto',
+                onError: null,
+            },
+            desc: '图片',
+            dev: ImageDev, // 假设你有一个 ImageDev 组件
+            prod: ImageProd, // 假设你有一个 ImageProd 组件
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber',
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber',
+                }
+            ],
+            setter: [
+                {
+                    name: 'alt',
+                    label: '图像描述',
+                    type: 'input',
+                },
+                {
+                    name: 'fallback',
+                    label: '加载失败容错地址',
+                    type: 'input',
+                },
+                {
+                    name: 'placeholder',
+                    label: '加载占位',
+                    type: 'input',
+                },
+                {
+                    name: 'preview',
+                    label: '预览参数',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 修正为布尔值
+                        { label: 'false', value: false }
+                    ]
+                },
+                {
+                    name: 'src',
+                    label: '图片地址',
+                    type: 'input',
+                },
+                {
+                    name: 'onError',
+                    label: '加载错误回调',
+                    type: 'input',
+                }
+            ]
         }
+        
+
         
     },
     registerComponent: (name, componentConfig) => set((state) => {
