@@ -3,10 +3,10 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import ShowBox from './shoubox';
 import { Button, Layout, Menu } from 'antd';
 import { useComponentsStore } from '../editor/stores/component-total';
-import { divide } from 'lodash';
+import bgImage from '../../assets/bg.png'; // 根据相对路径导入图片
 
 const { Header, Content, Sider } = Layout;
-import bgImage from '../../assets/bg.png'; // 根据相对路径导入图片
+
 interface SchemaItem {
   schema: string | number;
   title: string;
@@ -39,15 +39,14 @@ interface ObjectTotal {
 
 export default function Show() {
   const navigate = useNavigate();
-  const [data, setData] = useState<FormObject[]>();
+  const [data, setData] = useState<FormObject[]>([]);
   const { objectTotal } = useComponentsStore();
-  const [select, setSelect] = useState(true);
+  const [select, setSelect] = useState(1);
 
   useEffect(() => {
     // 更新数据
-    setData(objectTotal); 
-
-  }, [objectTotal,select]);
+    setData(objectTotal);
+  }, [objectTotal]);
 
   const handleNavigate = (schema: string | number) => {
     const selectedItem = data?.find(item => item.fname === schema);
@@ -64,7 +63,7 @@ export default function Show() {
         <Button
           type="primary"
           className="ml-auto"
-          onClick={() => { navigate('/edit'); }} 
+          onClick={() => { navigate('/edit'); }}
         >
           + 创建表单
         </Button>
@@ -72,27 +71,36 @@ export default function Show() {
       <Layout>
         <Sider width={200} className="bg-gray-800 text-white">
           <Menu mode="inline" defaultSelectedKeys={['1']} className="bg-gray-800">
-            <Menu.Item key="1" className="hover:bg-gray-700 bg-slate-200" onClick={() => setSelect(!select)}>
+            <Menu.Item key="1" className="hover:bg-gray-700 bg-slate-200" onClick={() => setSelect(1)}>
               我的应用
             </Menu.Item>
-            <Menu.Item key="2" className="hover:bg-gray-700  bg-slate-200" onClick={() => setSelect(!select)}>
+            <Menu.Item key="2" className="hover:bg-gray-700 bg-slate-200" onClick={() => setSelect(2)}>
               模板应用
+            </Menu.Item>
+            <Menu.Divider className="my-2" />
+            <Menu.Item key="3" className="hover:bg-gray-700 bg-slate-200" onClick={() => setSelect(3)}>
+              性能监控
             </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="p-6 bg-gray-100">
           <Content className="p-6 bg-white rounded-lg shadow-lg flex center overflow-y-visible">
-            { select ?  <div className='overflow-auto flex flex-wrap m-10 w-full'>
-              {data?.map((item) => (
-                <ShowBox
-                imageSrc={bgImage}
-                  key={item.fname} // 使用 fname 作为唯一键
-                  title={item.fname}
-                  onNavigate={() => handleNavigate(item.fname)}
-                />
-              ))}
-            </div>:<div>123</div>
-            }
+            {select === 1 ? (
+              <div className='overflow-auto flex flex-wrap m-10 w-full'>
+                {data?.map((item) => (
+                  <ShowBox
+                    imageSrc={bgImage}
+                    key={item.fname} // 使用 fname 作为唯一键
+                    title={item.fname}
+                    onNavigate={() => handleNavigate(item.fname)}
+                  />
+                ))}
+              </div>
+            ) : select === 2 ? (
+              <div>模板应用内容</div>
+            ) : select === 3 ? (
+              <div>性能监控内容</div>
+            ) : null}
             {/* 在这里添加 Outlet 以切换对应路由内容 */}
           </Content>
         </Layout>
