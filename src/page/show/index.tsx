@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ShowBox from './shoubox';
-import { Layout } from 'antd';
+import { Button, Layout } from 'antd';
 import { useComponentsStore } from '../editor/stores/component-total';
 
 const { Header, Content } = Layout;
@@ -56,6 +56,13 @@ export default function Show() {
     <Layout className="h-screen">
       <Header className="flex items-center justify-between bg-gray-900 text-white shadow-lg">
         <div className="text-2xl font-bold">ChangeLowCode</div>
+        <Button
+          type="primary"
+          className="ml-auto"
+          onClick={() => { navigate('/edit'); }} 
+        >
+          新添
+        </Button>
       </Header>
       <Layout>  
         <Layout className="p-6 bg-gray-100">
