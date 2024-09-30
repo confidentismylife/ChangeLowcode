@@ -5,11 +5,15 @@ import LayoutPlay from '../page/layout/index'; // 确保拼写正确
 import Edit from '../page/editor/index';
 import Show from '../page/show/index';
 import SchemaPage from '../page/schema/index'; // 新增的页面组件
-
+import DataShow from '../page/dataShow'; // 新增的页面组件
 const router = createHashRouter([
   {
     path: '/',
     element: <Show />,
+    children: [
+      { path: '/datashow', element: <DataShow  /> },
+
+    ]
   },
   {
     path: '/edit',
@@ -19,10 +23,10 @@ const router = createHashRouter([
     path: '/schema/:id',
     element: <LayoutPlay />,
   },
-  // {
-  //   path: '/schema/:id',
-  //   element: <SchemaPage />,
-  // }
+  {
+    path: '/datashow',
+    element: <DataShow  />,
+  },
 ]);
 
 export default router;

@@ -54,7 +54,7 @@ export default function LayputPlay() {
           className="ml-auto"
           onClick={() => { navigate('/edit'); }} 
         >
-          新添
+          +创建项目
         </Button>
       </Header>
       <Layout>
