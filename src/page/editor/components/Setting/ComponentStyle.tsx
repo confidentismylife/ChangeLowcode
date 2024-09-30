@@ -22,7 +22,7 @@ export function ComponentStyle() {
     const data = form.getFieldsValue();
     form.setFieldsValue({...data, ...curComponent?.styles});
 
-    setCss(toCSSStr(curComponent?.styles!))
+    // setCss(toCSSStr(curComponent?.styles!))
   }, [curComponent])
 
   function toCSSStr(css: Record<string, any>) {

@@ -5,6 +5,7 @@ import { useAddRemoteComponentConfig } from '../../hooks/useAddRemoteComponentCo
 import { useAddRemoteComponentConfigVue } from '../../hooks/useAddRemoteComponentComfigVue';
 import { useNavigate } from 'react-router-dom';
 import { useComponentsShow } from '../../stores/component-show';
+import { useComponentsStore} from '../../stores/component-total';
 
 export function Header() {
     const { mode, setMode, setCurComponentId, components } = useComponetsStore();
@@ -16,9 +17,10 @@ export function Header() {
     const [remoteUrlVue, setRemoteUrlVue] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js'); // Vue 初始远程 URL
     const navigate = useNavigate();
     const { addShowMessage } = useComponentsShow();
+    const {addFormObject,addComponentToForm,objectTotal} = useComponentsStore();
     const [locodeVisible, setLocodeVisible] = useState(false);
     const [name, setName] = useState(''); // 存储用户输入的名称
-
+    const [pm, setpm] = useState(''); // 存储用户输入的名称
     // 调用自定义 Hook 分别加载远程 React 和 Vue 组件
     useAddRemoteComponentConfig(remoteUrlReact);
     // useAddRemoteComponentConfigVue(remoteUrlVue);
@@ -40,14 +42,30 @@ export function Header() {
         const componentWithId = {
             ...components[0],
             uindex: components[0].id + Date.now(), // 如果没有 id，则生成一个唯一的时间戳作为 id
-            project: name,
+            form: name,
         };
-
-        // 添加组件到状态管理
-        addShowMessage(componentWithId);
+        
+        const formObject = {
+            fname: pm, // 表单对象名称
+            componentForm: [componentWithId], // 组件数组
+        };
+    
+        // 检查 store 中是否已有相同 fname 的表单对象
+        const existingForm = objectTotal.find((form) => form.fname === pm);
+    
+        if (!existingForm) {
+            // 如果不存在，添加新的 FormObject
+            addFormObject(formObject);
+        } else {
+            // 如果已经存在，添加组件到现有的 FormObject
+            addComponentToForm(pm, componentWithId); // 传入已有的表单名称和新组件
+        }
+    
+        // 其他操作
         setLocodeVisible(false);
         navigate(`/`); // 导航回首页
     };
+    
 
     return (
         <div className='w-full h-full'>
@@ -137,9 +155,15 @@ export function Header() {
                 className='rounded-lg shadow-lg'
             >
                 <Input
-                    placeholder="输入名称"
+                    placeholder="输入表单名称"
                     value={name}
                     onChange={(e) => setName(e.target.value)} // 监听输入框变化
+                    className='rounded-lg'
+                />
+                     <Input
+                    placeholder="输入项目名称"
+                    value={pm}
+                    onChange={(e) => setpm(e.target.value)} // 监听输入框变化
                     className='rounded-lg'
                 />
             </Modal>

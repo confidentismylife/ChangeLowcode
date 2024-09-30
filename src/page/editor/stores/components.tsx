@@ -12,8 +12,6 @@ export interface Component {
   parentId?: number;
   project?: string|number;
   uindex?: string|number;
-
-
 }
 
 interface State {
