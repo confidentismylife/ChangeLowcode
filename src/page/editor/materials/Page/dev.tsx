@@ -1,21 +1,21 @@
+// src/components/Page.tsx
+import React from 'react';
 import { CommonComponentProps } from "../../interface";
-import { useMaterailDrop } from "../../hooks/useMaterailDrop";
-import useComponentsDrop from "../../stores/components-drop";
+import { useDragAndDrop } from '../../hooks/useDragAndDrop';
 
 function Page({ id, name, children, styles }: CommonComponentProps) {
-    const { components } = useComponentsDrop();
-    const {canDrop, drop } = useMaterailDrop([...components], id);
-
+    const { handleDragOver, handleDrop } = useDragAndDrop(id);
     return (
         <div
             data-component-id={id}
-            ref={drop}
-            className='p-[20px] h-[100%] box-border'
-            style={{ ...styles, border: canDrop ? '2px solid blue' : 'none' }}
+            className='p-[20px] h-full w-full flex items-center justify-center'
+            style={{ ...styles }} // 自定义样式
+            onDragOver={handleDragOver} // 允许拖拽进入
+            onDrop={handleDrop} // 处理放置事件
         >
             {children}
         </div>
-    )
+    );
 }
 
 export default Page;

@@ -124,7 +124,6 @@ export function getComponentById(
     components: Component[]
   ): Component | null {
     if (!id) return null;
-  
     for (const component of components) {
       if (component.id == id) return component;
       if (component.children && component.children.length > 0) {

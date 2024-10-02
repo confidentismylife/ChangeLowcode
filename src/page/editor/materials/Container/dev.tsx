@@ -1,50 +1,29 @@
-import { useDrag } from 'react-dnd';
-import { useMaterailDrop } from '../../hooks/useMaterailDrop';
+// src/components/Container.tsx
+import React, { useRef } from 'react';
 import { CommonComponentProps } from '../../interface';
-import { useEffect, useRef } from 'react';
-import useComponentsDrop from '../../stores/components-drop';
-
-// 用于合并多个 ref 的工具函数
-const mergeRefs = (...refs: any[]) => (element: any) => {
-  refs.forEach(ref => {
-    if (typeof ref === 'function') {
-      ref(element);
-    } else if (ref) {
-      ref.current = element;
-    }
-  });
-};
+import { useDragAndDrop } from '../../hooks/useDragAndDrop';
 
 const Container = ({ id, name, children, styles }: CommonComponentProps) => {
-    const { components } = useComponentsDrop();
-    // 使用 useMaterailDrop 钩子
-    const { canDrop, drop } = useMaterailDrop([...components], id);
-    
-    // 用于指向容器的 ref
     const divRef = useRef<HTMLDivElement>(null);
+    const { handleDragOver, handleDrop } = useDragAndDrop(id); // 使用自定义 hook
 
-    // 使用 useDrag 钩子
-    const [_, drag] = useDrag({
-        type: name,
-        item: {
-            type: name,
-            dragType: 'move',
-            id: id
-        }
-    });
-
-    useEffect(() => {
-        // 将 drop 和 drag 结合到同一个 ref 上
-        const combinedRef = mergeRefs(divRef, drop, drag);
-        combinedRef(divRef.current);
-    }, [drop, drag]);
+    // 开始拖拽时触发
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        // 将组件 ID 和类型传递到拖拽数据中
+        const draggedItem = JSON.stringify({ id, name, dragType: 'move' });
+        event.dataTransfer.setData('text/plain', draggedItem); // 设置拖拽数据
+    };
 
     return (
         <div 
             data-component-id={id}
-            ref={divRef} // 这里绑定 divRef 到容器
+            ref={divRef} // 绑定 divRef 到容器
             style={styles}
-            className={`min-h-[100px] p-[20px] ${canDrop ? 'border-[2px] border-[blue]' : 'border-[1px] border-[#000]'}`}
+            className={`min-h-[100px] p-[20px] border-[1px] border-[#000]`}
+            draggable // 使容器可拖拽
+            onDragStart={handleDragStart} // 开始拖拽事件
+            onDragOver={handleDragOver} // 允许拖拽进入
+            onDrop={handleDrop} // 处理放置事件
         >
             {children}
         </div>

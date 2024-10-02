@@ -19,6 +19,13 @@ export function EditArea() {
             if (!config?.dev) {
                 return null;
             }
+            // 设置组件样式，使用 x 和 y 属性进行定位
+            const style = {
+                position: 'absolute', // 绝对定位
+                left: component.x ?? 0, // 使用 x 属性，默认为 0
+                top: component.y ?? 0, // 使用 y 属性，默认为 0
+                ...component.styles, // 合并其他样式
+            };
 
             return React.createElement(
                 config.dev,
@@ -26,7 +33,7 @@ export function EditArea() {
                     key: component.id,
                     id: component.id,
                     name: component.name,
-                    styles: component.styles,
+                    styles: style, // 将样式传递给组件
                     ...config.defaultProps,
                     ...component.props,
                 },
@@ -53,13 +60,12 @@ export function EditArea() {
 
     const handleClick: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
-    
+
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
-     
+
             const componentId = ele.dataset?.componentId;
             if (componentId) {
-
                 setCurComponentId(+componentId);
                 return;
             }
@@ -114,7 +120,6 @@ export function EditArea() {
                     containerClassName="edit-area"
                     componentId={curComponentId}
                     scrollToplength={scrollToplength}
-
                 />
             )}
             <div className="portal-wrapper"></div>

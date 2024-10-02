@@ -1,33 +1,45 @@
-import { useDrag } from "react-dnd";
+import React, { useRef } from 'react';
 
 export interface MaterialItemProps {
     name: string;
     desc: string;
 }
+interface DroppedItem {
+    id?: number;  // 组件ID
+    name: string;  // 组件类型
+    dragType: 'add' | 'move';  // 拖拽类型
+}
 
+
+// MaterialItem.tsx remains unchanged
 export function MaterialItem(props: MaterialItemProps) {
     const { name, desc } = props;
-
-    const [_, drag] = useDrag({
-        type: name,
-        item: { type: name },
-    });
+    const itemRef = useRef<HTMLDivElement>(null);
+    const ppp: DroppedItem = {
+        name: name,
+        dragType: 'add',
+    };
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData('text/plain', JSON.stringify(ppp));
+    };
 
     return (
         <div
-            ref={drag}
+            ref={itemRef}
+            draggable
+            onDragStart={handleDragStart}
             className='
                 border
                 border-gray-300
-                w-24       /* 较小的固定宽度 */
-                h-14       /* 较小的固定高度 */
-                p-2        /* 适中的内边距 */
-                m-1        /* 较小的外边距 */
+                w-24
+                h-14
+                p-2
+                m-1
                 cursor-move
-                inline-flex /* 使用 inline-flex 布局 */
+                inline-flex
                 flex-col
-                justify-center /* 垂直居中 */
-                items-center   /* 水平居中 */
+                justify-center
+                items-center
                 bg-white
                 rounded-md
                 shadow-sm
@@ -36,7 +48,7 @@ export function MaterialItem(props: MaterialItemProps) {
                 hover:shadow-md
                 hover:scale-105
                 hover:bg-gray-100
-                text-center    /* 文本居中 */
+                text-center
             '
         >
             <div className="text-xs font-medium text-gray-800">
