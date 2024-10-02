@@ -8,7 +8,7 @@ import { useComponentsShow } from '../../stores/component-show';
 import { useComponentsStore} from '../../stores/component-total';
 
 export function Header() {
-    const { mode, setMode, setCurComponentId, components } = useComponetsStore();
+    const { mode, setMode, setCurComponentId, components,clearComponents} = useComponetsStore();
     const [modalVisibleReact, setModalVisibleReact] = useState(false); // 控制 React Modal 的显示
     const [modalVisibleVue, setModalVisibleVue] = useState(false); // 控制 Vue Modal 的显示
     const [inputUrlReact, setInputUrlReact] = useState(''); // 存储用户输入的 React 组件 URL
@@ -16,7 +16,6 @@ export function Header() {
     const [remoteUrlReact, setRemoteUrlReact] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component@1.0.5/dist/bundle.umd.js'); // React 初始远程 URL
     const [remoteUrlVue, setRemoteUrlVue] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js'); // Vue 初始远程 URL
     const navigate = useNavigate();
-    const { addShowMessage } = useComponentsShow();
     const {addFormObject,addComponentToForm,objectTotal} = useComponentsStore();
     const [locodeVisible, setLocodeVisible] = useState(false);
     const [name, setName] = useState(''); // 存储用户输入的名称
@@ -60,10 +59,11 @@ export function Header() {
             // 如果已经存在，添加组件到现有的 FormObject
             addComponentToForm(pm, componentWithId); // 传入已有的表单名称和新组件
         }
-    
+        
         // 其他操作
         setLocodeVisible(false);
         navigate(`/`); // 导航回首页
+        clearComponents(); // 清理组件
     };
     
 
@@ -72,7 +72,16 @@ export function Header() {
             <div className='h-full flex justify-between items-center px-[20px] bg-gray-900 text-white shadow-lg'>
                 <div className='text-xl font-bold'>ChangeLowCode</div>
                 <Space>
-                    <Button type='primary' onClick={() => setLocodeVisible(true)} className='px-4 py-2'>保存</Button>
+                <Button 
+                    type='primary' 
+                    onClick={() => {
+                        setLocodeVisible(true);
+             
+                    }} 
+                    className='px-4 py-2'>
+                    保存
+                    </Button>
+
                     {mode === 'edit' && (
                         <Button
                             onClick={() => {

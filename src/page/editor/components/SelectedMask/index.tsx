@@ -13,9 +13,10 @@ interface SelectedMaskProps {
   containerClassName: string;
   componentId: number;
   scrollToplength: number;
+  scrollLeftlength: number;
 }
 
-function SelectedMask({ containerClassName, portalWrapperClassName, componentId, scrollToplength }: SelectedMaskProps) {
+function SelectedMask({ containerClassName, portalWrapperClassName, componentId, scrollToplength, scrollLeftlength }: SelectedMaskProps) {
   const [position, setPosition] = useState({
     left: 0,
     top: 0,
@@ -24,57 +25,47 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
     labelTop: 0,
     labelLeft: 0,
   });
-  const [isReady, setIsReady] = useState(false);  // 状态来管理渲染
+  const [isReady, setIsReady] = useState(false);
+  const { components, curComponentId, curComponent, deleteComponent, setCurComponentId, updateComponentStyles } = useComponetsStore();
+  const updatePosition = () => {
+    if (!componentId) return;
 
-  const { components, curComponentId, curComponent, deleteComponent, setCurComponentId } = useComponetsStore();
+    const container = document.querySelector(`.${containerClassName}`);
+    if (!container) return;
 
-  useEffect(() => {
-    const updatePosition = () => {
-      if (!componentId) return;
+    const node = document.querySelector(`[data-component-id="${componentId}"]`);
+    if (!node) return;
 
-      const container = document.querySelector(`.${containerClassName}`);
-      if (!container) return;
+    const { top, left, width, height } = node.getBoundingClientRect();
+    const { top: containerTop, left: containerLeft } = container.getBoundingClientRect();
 
-      const node = document.querySelector(`[data-component-id="${componentId}"]`);
-      if (!node) return;
+    let labelTop = top - containerTop + container.scrollTop;
+    let labelLeft = left - containerLeft + width;
 
-      const { top, left, width, height } = node.getBoundingClientRect();
-      const { top: containerTop, left: containerLeft } = container.getBoundingClientRect();
+    setPosition({
+      top: top - containerTop + container.scrollTop - scrollToplength,
+      left: left - containerLeft,
+      width,
+      height,
+      labelTop,
+      labelLeft,
+    });
+  };
 
-      let labelTop = top - containerTop + container.scrollTop;
-      let labelLeft = left - containerLeft + width;
-      labelLeft = labelLeft + 0;
+  const resizeHandler = () => {
+    updatePosition();
+  };
 
-      if (labelTop <= 0) {
-        labelTop -= -20;
-      }
-
-      setPosition({
-        top: top - containerTop + container.scrollTop - scrollToplength,
-        left: left - containerLeft,
-        width,
-        height,
-        labelTop,
-        labelLeft,
-      });
-    };
-
-    const resizeHandler = () => {
+  const checkReady = () => {
+    const el = document.querySelector(`.${portalWrapperClassName}`);
+    if (el) {
+      setIsReady(true);
       updatePosition();
-    };
-
-    // 初始化时检查 DOM 是否准备好
-    const checkReady = () => {
-      const el = document.querySelector(`.${portalWrapperClassName}`);
-      if (el) {
-        setIsReady(true);
-        updatePosition();
-      }
-    };
-
+    }
+  };
+  useEffect(() => {
     checkReady();
     window.addEventListener('resize', resizeHandler);
-
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
@@ -101,15 +92,104 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
     setCurComponentId(null);
   }
 
-  if (!isReady) return null;  // 当目标容器尚未准备好时，不渲染组件
+  // Resize handling
+  const handleMouseDown = (e: React.MouseEvent, direction: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 获取初始宽高和鼠标位置
+    const initialWidth = position.width;
+    const initialHeight = position.height;
+    const initialX = e.clientX;
+    const initialY = e.clientY;
+
+    let newWidth = initialWidth;
+    let newHeight = initialHeight;
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      // 计算新的宽高
+      if (direction.includes('right')) {
+        newWidth = initialWidth + (moveEvent.clientX - initialX);
+      }
+      if (direction.includes('bottom')) {
+        newHeight = initialHeight + (moveEvent.clientY - initialY);
+      }
+
+      // 直接更新组件的大小，确保不小于20
+      setPosition((prev) => ({
+        ...prev,
+        width: Math.max(newWidth, 1), // Prevent collapse
+        height: Math.max(newHeight, 1), // Prevent collapse
+      }));
+    };
+
+    const onMouseUp = () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+
+      // 更新最终的组件样式
+      updateComponentStyles(componentId, {
+        width: Math.max(newWidth, 1),
+        height: Math.max(newHeight, 1),
+      });
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  if (!isReady) return null;
 
   const el = document.querySelector(`.${portalWrapperClassName}`)!;
+
+  const createDots = (position: { left: number, top: number, width: number, height: number }) => {
+    const dots = [];
+    const dotStyle: React.CSSProperties = {
+      position: 'absolute',
+      width: '8px',
+      height: '8px',
+      backgroundColor: 'blue',
+      borderRadius: '50%',
+      transform: 'translate(-50%, -50%)',
+    };
+
+    // 角上的圆点（每个角1个）
+    dots.push(
+      <div style={{ ...dotStyle, left: position.left, top: position.top }} key="top-left" onMouseDown={(e) => handleMouseDown(e, 'top-left')} />,
+      <div style={{ ...dotStyle, left: position.left + position.width, top: position.top }} key="top-right" onMouseDown={(e) => handleMouseDown(e, 'top-right')} />,
+      <div style={{ ...dotStyle, left: position.left, top: position.top + position.height }} key="bottom-left" onMouseDown={(e) => handleMouseDown(e, 'bottom-left')} />,
+      <div style={{ ...dotStyle, left: position.left + position.width, top: position.top + position.height }} key="bottom-right" onMouseDown={(e) => handleMouseDown(e, 'bottom-right')} />
+    );
+
+    // 边上的圆点（每条边1个）
+    const edgeDots = 1; // 每条边1个圆点
+    for (let i = 1; i <= edgeDots; i++) {
+      // 上边
+      dots.push(
+        <div style={{ ...dotStyle, left: position.left + (position.width / (edgeDots + 1)) * i, top: position.top }} key={`top-${i}`} onMouseDown={(e) => handleMouseDown(e, 'top')} />
+      );
+      // 下边
+      dots.push(
+        <div style={{ ...dotStyle, left: position.left + (position.width / (edgeDots + 1)) * i, top: position.top + position.height }} key={`bottom-${i}`} onMouseDown={(e) => handleMouseDown(e, 'bottom')} />
+      );
+      // 左边
+      dots.push(
+        <div style={{ ...dotStyle, left: position.left, top: position.top + (position.height / (edgeDots + 1)) * i }} key={`left-${i}`} onMouseDown={(e) => handleMouseDown(e, 'left')} />
+      );
+      // 右边
+      dots.push(
+        <div style={{ ...dotStyle, left: position.left + position.width, top: position.top + (position.height / (edgeDots + 1)) * i }} key={`right-${i}`} onMouseDown={(e) => handleMouseDown(e, 'right')} />
+      );
+    }
+
+    return dots;
+  };
 
   return createPortal((
     <>
       <div
         style={{
-          position: "absolute",
+          position: "absolute" as const,
           left: position.left,
           top: position.top,
           backgroundColor: "rgba(0, 0, 255, 0.1)",
@@ -124,7 +204,7 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
       />
       <div
         style={{
-          position: "absolute",
+          position: "absolute" as const,
           left: position.labelLeft,
           top: position.labelTop,
           fontSize: "14px",
@@ -167,12 +247,13 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
                 cancelText={'取消'}
                 onConfirm={handleDelete}
               >
-                <DeleteOutlined style={{ color: '#fff' }} />
+                <DeleteOutlined style={{ color: '#fff', cursor: 'pointer' }} />
               </Popconfirm>
             </div>
           )}
         </Space>
       </div>
+      {createDots(position)}
     </>
   ), el);
 }

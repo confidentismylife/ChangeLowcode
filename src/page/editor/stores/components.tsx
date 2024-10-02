@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import {create, StateCreator} from 'zustand';
+import { create, StateCreator } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface Component {
@@ -16,7 +16,6 @@ export interface Component {
   y?: number; // 新增 y 属性
 }
 
-
 interface State {
   components: Component[];
   mode: 'edit' | 'preview';
@@ -31,6 +30,7 @@ interface Action {
   updateComponentStyles: (componentId: number, styles: CSSProperties, replace?: boolean) => void;
   setCurComponentId: (componentId: number | null) => void;
   setMode: (mode: State['mode']) => void;
+  clearComponents: () => void; // 新增清理函数
 }
 
 const creator: StateCreator<State & Action> = (set, get) => ({
@@ -45,7 +45,7 @@ const creator: StateCreator<State & Action> = (set, get) => ({
   curComponentId: null,
   curComponent: null,
   mode: 'edit',
-  setMode: (mode) => set({mode}),
+  setMode: (mode) => set({ mode }),
   setCurComponentId: (componentId) =>
     set((state) => ({
       curComponentId: componentId,
@@ -68,9 +68,9 @@ const creator: StateCreator<State & Action> = (set, get) => ({
         }
 
         component.parentId = parentId;
-        return {components: [...state.components]};
+        return { components: [...state.components] };
       }
-      return {components: [...state.components, component]};
+      return { components: [...state.components, component] };
     }),
   deleteComponent: (componentId) => {
     if (!componentId) return;
@@ -87,7 +87,7 @@ const creator: StateCreator<State & Action> = (set, get) => ({
           (item) => item.id !== +componentId
         );
 
-        set({components: [...get().components]});
+        set({ components: [...get().components] });
       }
     }
   },
@@ -95,24 +95,34 @@ const creator: StateCreator<State & Action> = (set, get) => ({
     set((state) => {
       const component = getComponentById(componentId, state.components);
       if (component) {
-        component.props = {...component.props, ...props};
+        component.props = { ...component.props, ...props };
 
-        return {components: [...state.components]};
+        return { components: [...state.components] };
       }
 
-      return {components: [...state.components]};
+      return { components: [...state.components] };
     }),
   updateComponentStyles: (componentId, styles, replace) =>
-      set((state) => {
-        const component = getComponentById(componentId, state.components);
-        if (component) {
-          component.styles = replace ? {...styles} : {...component.styles, ...styles};
+    set((state) => {
+      const component = getComponentById(componentId, state.components);
+      if (component) {
+        component.styles = replace ? { ...styles } : { ...component.styles, ...styles };
 
-          return {components: [...state.components]};
-        }
+        return { components: [...state.components] };
+      }
 
-        return {components: [...state.components]};
-      })   
+      return { components: [...state.components] };
+    }),
+  clearComponents: () => set({ // 清理函数
+    components: [
+      {
+        id: 1,
+        name: 'Page',
+        props: {},
+        desc: '页面',
+      }
+    ]
+  }),
 });
 
 export const useComponetsStore = create<State & Action>()(persist(creator, {
@@ -120,16 +130,16 @@ export const useComponetsStore = create<State & Action>()(persist(creator, {
 }));
 
 export function getComponentById(
-    id: number | null,
-    components: Component[]
-  ): Component | null {
-    if (!id) return null;
-    for (const component of components) {
-      if (component.id == id) return component;
-      if (component.children && component.children.length > 0) {
-        const result = getComponentById(id, component.children);
-        if (result !== null) return result;
-      }
+  id: number | null,
+  components: Component[]
+): Component | null {
+  if (!id) return null;
+  for (const component of components) {
+    if (component.id == id) return component;
+    if (component.children && component.children.length > 0) {
+      const result = getComponentById(id, component.children);
+      if (result !== null) return result;
     }
-    return null;
+  }
+  return null;
 }

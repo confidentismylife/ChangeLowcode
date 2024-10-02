@@ -7,7 +7,6 @@ function Page({ id, name, children, styles }: CommonComponentProps) {
     const { handleDragOver, handleDrop } = useDragAndDrop(id);
     return (
         <div
-            data-component-id={id}
             className='p-[20px] h-full w-full flex items-center justify-center'
             style={{ ...styles }} // 自定义样式
             onDragOver={handleDragOver} // 允许拖拽进入

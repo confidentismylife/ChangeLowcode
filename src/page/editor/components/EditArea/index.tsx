@@ -47,10 +47,13 @@ export function EditArea() {
     const handleMouseOver: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
 
+   
+        
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
-
+    
             const componentId = ele.dataset?.componentId;
+            
             if (componentId) {
                 setHoverComponentId(+componentId);
                 return;

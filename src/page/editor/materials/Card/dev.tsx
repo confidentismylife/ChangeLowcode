@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 import { Card as AntdCard, Avatar } from 'antd';
-import { useMaterailDrop } from '../../hooks/useMaterailDrop';
-import { useDrag } from 'react-dnd';
+import { useDragAndDrop } from '../../hooks/useDragAndDrop';
 import { CommonComponentProps } from '../../interface';
 import useComponentsDrop from '../../stores/components-drop';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import EllipsisOutlined from '@ant-design/icons/EllipsisOutlined';
-
+import type{ DroppedItem } from '../../../type/DroppedItem'
 const { Meta } = AntdCard;
 
 interface CardProps extends CommonComponentProps {
@@ -40,20 +39,20 @@ function Card({
     description = '这是默认描述', // 默认描述
 }: Partial<CardProps>) {
     const { components } = useComponentsDrop();
-    const { canDrop, drop } = useMaterailDrop([...components], (id as number));
     const divRef = useRef<HTMLDivElement>(null);
 
-    const [, drag] = useDrag({
-        type: name || 'default',
-        item: { type: name || 'default', dragType: 'move', id },
-    });
-
-    useEffect(() => {
-        if (divRef.current) {
-            drop(divRef);
-            drag(divRef);
-        }
-    }, [drop, drag]);
+    // 使用自定义 hook
+    const { handleDragOver, handleDrop } = useDragAndDrop(id);
+    const ppp: DroppedItem = {
+        id: id,
+        name: name,
+        dragType: 'move',
+      };
+    
+      const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData('text/plain', JSON.stringify(ppp)); // 设置拖拽数据
+        console.log('开始', event);
+      };
 
     const parseExtra = (extra?: string) => {
         if (!extra) return null;
@@ -65,10 +64,14 @@ function Card({
 
     return (
         <div
-            className={`w-full min-h-[50px] p-[20px] border ${canDrop ? 'border-2 border-blue-500' : 'border-black'}`}
+            className={` min-h-[50px] p-[20px] `}
             data-component-id={id}
             style={{ ...styles }} // Combine external styles with inline styles
             ref={divRef}
+            draggable
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver} // 允许拖拽进入
+            onDrop={handleDrop} // 处理放置事件
         >
             <AntdCard
                 title={title}

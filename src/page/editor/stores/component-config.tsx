@@ -5,24 +5,24 @@ import ButtonDev from '../materials/Button/dev';
 import ButtonProd from '../materials/Button/prod';
 import PageDev from '../materials/Page/dev';
 import PageProd from '../materials/Page/prod';
-// import ModalProd from '../materials/Modal/prod';
-// import ModalDev from '../materials/Modal/dev';
-// import TableDev from '../materials/Table/dev';
-// import TableProd from '../materials/Table/prod';
-// import TableColumnDev from '../materials/TableColumn/dev';
-// import TableColumnProd from '../materials/TableColumn/prod';
-// import FormDev from '../materials/Form/dev';
-// import FormProd from '../materials/Form/prod';
-// import FormItemDev from '../materials/FormItem/dev';
-// import FormItemProd from '../materials/FormItem/prod';
-// import SpaceDev from '../materials/Space/dev';
-// import SpaceProd from '../materials/Space/prod';
-// import CardDev from '../materials/Card/dev';
-// import CardProd from '../materials/Card/prod';
-// import TextDev from '../materials/Text/dev';
-// import TextProd from '../materials/Text/prod';
-// import ImageDev from '../materials/Image/dev';
-// import ImageProd from '../materials/Image/prod';
+import ModalProd from '../materials/Modal/prod';
+import ModalDev from '../materials/Modal/dev';
+import TableDev from '../materials/Table/dev';
+import TableProd from '../materials/Table/prod';
+import TableColumnDev from '../materials/TableColumn/dev';
+import TableColumnProd from '../materials/TableColumn/prod';
+import FormDev from '../materials/Form/dev';
+import FormProd from '../materials/Form/prod';
+import FormItemDev from '../materials/FormItem/dev';
+import FormItemProd from '../materials/FormItem/prod';
+import SpaceDev from '../materials/Space/dev';
+import SpaceProd from '../materials/Space/prod';
+import CardDev from '../materials/Card/dev';
+import CardProd from '../materials/Card/prod';
+import TextDev from '../materials/Text/dev';
+import TextProd from '../materials/Text/prod';
+import ImageDev from '../materials/Image/dev';
+import ImageProd from '../materials/Image/prod';
 export interface ComponentSetter {
     name: string;
     label: string;
@@ -150,43 +150,43 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
             dev: ButtonDev,
             prod: ButtonProd
         },
-        // Modal: {
-        //     name: 'Modal',
-        //     defaultProps: {
-        //         title: '弹窗'
-        //     },
-        //     setter: [
-        //         {
-        //             name: 'title',
-        //             label: '标题',
-        //             type: 'input'
-        //         }
-        //     ],
-        //     stylesSetter: [],
-        //     events: [
-        //         {
-        //             name: 'onOk',
-        //             label: '确认事件',
-        //         },
-        //         {
-        //             name: 'onCancel',
-        //             label: '取消事件'
-        //         },
-        //     ],
-        //     methods: [
-        //         {
-        //             name: 'open',
-        //             label: '打开弹窗',
-        //         },
-        //         {
-        //             name: 'close',
-        //             label: '关闭弹窗'
-        //         }
-        //     ],
-        //     desc: '弹窗',
-        //     dev: ModalDev,
-        //     prod: ModalProd
-        // },
+        Modal: {
+            name: 'Modal',
+            defaultProps: {
+                title: '弹窗'
+            },
+            setter: [
+                {
+                    name: 'title',
+                    label: '标题',
+                    type: 'input'
+                }
+            ],
+            stylesSetter: [],
+            events: [
+                {
+                    name: 'onOk',
+                    label: '确认事件',
+                },
+                {
+                    name: 'onCancel',
+                    label: '取消事件'
+                },
+            ],
+            methods: [
+                {
+                    name: 'open',
+                    label: '打开弹窗',
+                },
+                {
+                    name: 'close',
+                    label: '关闭弹窗'
+                }
+            ],
+            desc: '弹窗',
+            dev: ModalDev,
+            prod: ModalProd
+        },
         Page: {
             name: 'Page',
             defaultProps: {},
@@ -194,408 +194,408 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
             dev: PageDev,
             prod: PageProd
         },
-        // Table: {
-        //     name: 'Table',
-        //     defaultProps: {},
-        //     desc: '表格',
-        //     setter: [
-        //         {
-        //             name: 'url',
-        //             label: 'url',
-        //             type: 'input',
-        //         },
-        //     ],
-        //     dev: TableDev,
-        //     prod: TableProd
-        // },
-        // TableColumn: {
-        //     name: 'TableColumn',
-        //     desc: '表格列',
-        //     defaultProps: {
-        //         dataIndex: `col_${new Date().getTime()}`,
-        //         title: '列名'
-        //     },
-        //     setter: [
-        //         {
-        //             name: 'type',
-        //             label: '类型',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: '文本',
-        //                     value: 'text',
-        //                 },
-        //                 {
-        //                     label: '日期',
-        //                     value: 'date',
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             name: 'title',
-        //             label: '标题',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'dataIndex',
-        //             label: '字段',
-        //             type: 'input',
-        //         },
-        //     ],
-        //     dev: TableColumnDev,
-        //     prod: TableColumnProd,
-        // },
-        // Form: {
-        //     name: 'Form',
-        //     defaultProps: {},
-        //     desc: '表单',
-        //     setter: [
-        //         {
-        //             name: 'title',
-        //             label: '标题',
-        //             type: 'input',
-        //         },
-        //     ],
-        //     events: [
-        //         {
-        //             name: 'onFinish',
-        //             label: '提交事件',
-        //         }
-        //     ],
-        //     methods: [
-        //         {
-        //             name: 'submit',
-        //             label: '提交',
-        //         }
-        //     ],
-        //     dev: FormDev,
-        //     prod: FormProd
-        // },
-        // FormItem: {
-        //     name: 'FormItem',
-        //     desc: '表单项',
-        //     defaultProps: {
-        //         name: new Date().getTime(),
-        //         label: '姓名'
-        //     },
-        //     dev: FormItemDev,
-        //     prod: FormItemProd,
-        //     setter: [
-        //         {
-        //             name: 'type',
-        //             label: '类型',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: '文本',
-        //                     value: 'input',
-        //                 },
-        //                 {
-        //                     label: '日期',
-        //                     value: 'date',
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             name: 'label',
-        //             label: '标题',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'name',
-        //             label: '字段',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'rules',
-        //             label: '校验',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: '必填',
-        //                     value: 'required',
-        //                 },
-        //             ],
-        //         }
-        //     ]
-        // },
-        // Space: {
-        //     name: 'Space',
-        //     defaultProps: {},
-        //     desc: 'Space',
-        //     dev: SpaceDev,
-        //     prod: SpaceProd,
-        //     setter: [
-        //         {
-        //             name: 'align',
-        //             label: '排列',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: 'start',
-        //                     value: 'start',
-        //                 },
-        //                 {
-        //                     label: 'end',
-        //                     value: 'end',
-        //                 },
-        //                 {
-        //                     label: 'center',
-        //                     value: 'center',
-        //                 },
-        //                 {
-        //                     label: 'baseline',
-        //                     value: 'baseline',
-        //                 },
-        //             ],
+        Table: {
+            name: 'Table',
+            defaultProps: {},
+            desc: '表格',
+            setter: [
+                {
+                    name: 'url',
+                    label: 'url',
+                    type: 'input',
+                },
+            ],
+            dev: TableDev,
+            prod: TableProd
+        },
+        TableColumn: {
+            name: 'TableColumn',
+            desc: '表格列',
+            defaultProps: {
+                dataIndex: `col_${new Date().getTime()}`,
+                title: '列名'
+            },
+            setter: [
+                {
+                    name: 'type',
+                    label: '类型',
+                    type: 'select',
+                    options: [
+                        {
+                            label: '文本',
+                            value: 'text',
+                        },
+                        {
+                            label: '日期',
+                            value: 'date',
+                        },
+                    ],
+                },
+                {
+                    name: 'title',
+                    label: '标题',
+                    type: 'input',
+                },
+                {
+                    name: 'dataIndex',
+                    label: '字段',
+                    type: 'input',
+                },
+            ],
+            dev: TableColumnDev,
+            prod: TableColumnProd,
+        },
+        Form: {
+            name: 'Form',
+            defaultProps: {},
+            desc: '表单',
+            setter: [
+                {
+                    name: 'title',
+                    label: '标题',
+                    type: 'input',
+                },
+            ],
+            events: [
+                {
+                    name: 'onFinish',
+                    label: '提交事件',
+                }
+            ],
+            methods: [
+                {
+                    name: 'submit',
+                    label: '提交',
+                }
+            ],
+            dev: FormDev,
+            prod: FormProd
+        },
+        FormItem: {
+            name: 'FormItem',
+            desc: '表单项',
+            defaultProps: {
+                name: new Date().getTime(),
+                label: '姓名'
+            },
+            dev: FormItemDev,
+            prod: FormItemProd,
+            setter: [
+                {
+                    name: 'type',
+                    label: '类型',
+                    type: 'select',
+                    options: [
+                        {
+                            label: '文本',
+                            value: 'input',
+                        },
+                        {
+                            label: '日期',
+                            value: 'date',
+                        },
+                    ],
+                },
+                {
+                    name: 'label',
+                    label: '标题',
+                    type: 'input',
+                },
+                {
+                    name: 'name',
+                    label: '字段',
+                    type: 'input',
+                },
+                {
+                    name: 'rules',
+                    label: '校验',
+                    type: 'select',
+                    options: [
+                        {
+                            label: '必填',
+                            value: 'required',
+                        },
+                    ],
+                }
+            ]
+        },
+        Space: {
+            name: 'Space',
+            defaultProps: {},
+            desc: 'Space',
+            dev: SpaceDev,
+            prod: SpaceProd,
+            setter: [
+                {
+                    name: 'align',
+                    label: '排列',
+                    type: 'select',
+                    options: [
+                        {
+                            label: 'start',
+                            value: 'start',
+                        },
+                        {
+                            label: 'end',
+                            value: 'end',
+                        },
+                        {
+                            label: 'center',
+                            value: 'center',
+                        },
+                        {
+                            label: 'baseline',
+                            value: 'baseline',
+                        },
+                    ],
                     
-        //         },
-        //         {
-        //             name: 'direction',
-        //             label: '方向',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: 'verticalt',
-        //                     value: 'verticalt',
-        //                 },
-        //                 {
-        //                     label: 'horizontal',
-        //                     value: 'horizontal',
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             name: 'size',
-        //             label: '大小',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: 'large',
-        //                     value: 'large',
-        //                 },
-        //                 {
-        //                     label: 'middle',
-        //                     value: 'middle',
-        //                 },
-        //                 {
-        //                     label: 'small',
-        //                     value: 'small',
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             name: 'wrap',
-        //             label: '换行',
-        //             type: 'select',
-        //             options: [
-        //                 {
-        //                     label: 'true',
-        //                     value: 'true',
-        //                 },
-        //                 {
-        //                     label: 'false',
-        //                     value: 'false',
-        //                 },
-        //             ],
-        //         }
-        //     ],
-        // },
-        // Card: {
-        //     name: 'Card',
-        //     defaultProps: {
-        //         with:'300px'
-        //     },
-        //     desc: "Card",
-        //     dev: CardDev,
-        //     prod: CardProd,
-        //     setter: [
-        //         {
-        //             name: 'title',
-        //             label: '标题',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'extra',
-        //             label: 'extra',
-        //             type: 'input', // 输入格式为 "url:value"
-        //         },
-        //         // {
-        //         //     name: 'style',
-        //         //     label: '样式',
-        //         //     type: 'input', // 可以传入 CSS 样式
-        //         // },
-        //         {
-        //             name: 'bordered',
-        //             label: '边框',
-        //             type: 'select',
-        //             options: [
-        //                 { label: 'true', value: true }, // 修正为布尔值
-        //                 { label: 'false', value: false }
-        //             ]
-        //         },
-        //         {
-        //             name: 'cover',
-        //             label: '封面图片',
-        //             type: 'input', // 输入封面图片的 URL
-        //         },
-        //         {
-        //             name: 'actions',
-        //             label: '操作按钮',
-        //             type: 'input', // 输入格式为 JSON 字符串，例如: '[{"label":"编辑","icon":"edit"}]'
-        //         },
-        //         {
-        //             name: 'avatar',
-        //             label: '头像',
-        //             type: 'input', // 输入头像图片的 URL
-        //         },
-        //         {
-        //             name: 'description',
-        //             label: '描述',
-        //             type: 'input', // 输入描述文本
-        //         },
-        //     ],
-        //     stylesSetter: [
-        //         {
-        //             name: 'width',
-        //             label: '宽度',
-        //             type: 'inputNumber',
-        //         },
-        //         {
-        //             name: 'height',
-        //             label: '高度',
-        //             type: 'inputNumber',
-        //         }
-        //     ],
-        // },
-        // Text: {
-        //     name: 'Text',
-        //     defaultProps: {},
-        //     desc: '文本',
-        //     dev: TextDev,
-        //     prod: TextProd,
-        //     stylesSetter: [
-        //         {
-        //             name: 'width',
-        //             label: '宽度',
-        //             type: 'inputNumber',
-        //         },
-        //         {
-        //             name: 'height',
-        //             label: '高度',
-        //             type: 'inputNumber',
-        //         }
-        //     ],
-        //     setter: [
-        //         {
-        //             name: 'text',
-        //             label: '文本',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'wrap',
-        //             label: '换行',
-        //             type: 'select',
-        //             options: [
-        //                 { label: 'true', value: true }, // 修正为布尔值
-        //                 { label: 'false', value: false }
-        //             ]
-        //         },
-        //         {
-        //             name: 'mode',
-        //             label: '模式',
-        //             type: 'select',
-        //             options: [
-        //                 { label: '标题', value: 'title' },
-        //                 { label: '正文', value: 'body' }
-        //             ]
-        //         },
-        //         {
-        //             name: 'fontColor',
-        //             label: '字体颜色',
-        //             type: 'input', // 使用颜色选择器
-        //         },
-        //         {
-        //             name: 'textAlign',
-        //             label: '文本对齐',
-        //             type: 'select',
-        //             options: [
-        //                 { label: '左对齐', value: 'left' },
-        //                 { label: '居中', value: 'center' },
-        //                 { label: '右对齐', value: 'right' }
-        //             ]
-        //         },
-        //         {
-        //             name: 'lineHeight',
-        //             label: '行高',
-        //             type: 'input',
-        //         }
-        //     ]
-        // },
-        // Image : {
-        //     name: 'Image',
-        //     defaultProps: {
-        //         alt: 'Image',
-        //         fallback: '',
-        //         height: 'auto',
-        //         placeholder: null,
-        //         preview: true,
-        //         src: '',
-        //         width: 'auto',
-        //         onError: null,
-        //     },
-        //     desc: '图片',
-        //     dev: ImageDev, // 假设你有一个 ImageDev 组件
-        //     prod: ImageProd, // 假设你有一个 ImageProd 组件
-        //     stylesSetter: [
-        //         {
-        //             name: 'width',
-        //             label: '宽度',
-        //             type: 'inputNumber',
-        //         },
-        //         {
-        //             name: 'height',
-        //             label: '高度',
-        //             type: 'inputNumber',
-        //         }
-        //     ],
-        //     setter: [
-        //         {
-        //             name: 'alt',
-        //             label: '图像描述',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'fallback',
-        //             label: '加载失败容错地址',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'placeholder',
-        //             label: '加载占位',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'preview',
-        //             label: '预览参数',
-        //             type: 'select',
-        //             options: [
-        //                 { label: 'true', value: true }, // 修正为布尔值
-        //                 { label: 'false', value: false }
-        //             ]
-        //         },
-        //         {
-        //             name: 'src',
-        //             label: '图片地址',
-        //             type: 'input',
-        //         },
-        //         {
-        //             name: 'onError',
-        //             label: '加载错误回调',
-        //             type: 'input',
-        //         }
-        //     ]
-        // }
+                },
+                {
+                    name: 'direction',
+                    label: '方向',
+                    type: 'select',
+                    options: [
+                        {
+                            label: 'verticalt',
+                            value: 'verticalt',
+                        },
+                        {
+                            label: 'horizontal',
+                            value: 'horizontal',
+                        },
+                    ],
+                },
+                {
+                    name: 'size',
+                    label: '大小',
+                    type: 'select',
+                    options: [
+                        {
+                            label: 'large',
+                            value: 'large',
+                        },
+                        {
+                            label: 'middle',
+                            value: 'middle',
+                        },
+                        {
+                            label: 'small',
+                            value: 'small',
+                        },
+                    ],
+                },
+                {
+                    name: 'wrap',
+                    label: '换行',
+                    type: 'select',
+                    options: [
+                        {
+                            label: 'true',
+                            value: 'true',
+                        },
+                        {
+                            label: 'false',
+                            value: 'false',
+                        },
+                    ],
+                }
+            ],
+        },
+        Card: {
+            name: 'Card',
+            defaultProps: {
+                with:'300px'
+            },
+            desc: "Card",
+            dev: CardDev,
+            prod: CardProd,
+            setter: [
+                {
+                    name: 'title',
+                    label: '标题',
+                    type: 'input',
+                },
+                {
+                    name: 'extra',
+                    label: 'extra',
+                    type: 'input', // 输入格式为 "url:value"
+                },
+                // {
+                //     name: 'style',
+                //     label: '样式',
+                //     type: 'input', // 可以传入 CSS 样式
+                // },
+                {
+                    name: 'bordered',
+                    label: '边框',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 修正为布尔值
+                        { label: 'false', value: false }
+                    ]
+                },
+                {
+                    name: 'cover',
+                    label: '封面图片',
+                    type: 'input', // 输入封面图片的 URL
+                },
+                {
+                    name: 'actions',
+                    label: '操作按钮',
+                    type: 'input', // 输入格式为 JSON 字符串，例如: '[{"label":"编辑","icon":"edit"}]'
+                },
+                {
+                    name: 'avatar',
+                    label: '头像',
+                    type: 'input', // 输入头像图片的 URL
+                },
+                {
+                    name: 'description',
+                    label: '描述',
+                    type: 'input', // 输入描述文本
+                },
+            ],
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber',
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber',
+                }
+            ],
+        },
+        Text: {
+            name: 'Text',
+            defaultProps: {},
+            desc: '文本',
+            dev: TextDev,
+            prod: TextProd,
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber',
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber',
+                }
+            ],
+            setter: [
+                {
+                    name: 'text',
+                    label: '文本',
+                    type: 'input',
+                },
+                {
+                    name: 'wrap',
+                    label: '换行',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 修正为布尔值
+                        { label: 'false', value: false }
+                    ]
+                },
+                {
+                    name: 'mode',
+                    label: '模式',
+                    type: 'select',
+                    options: [
+                        { label: '标题', value: 'title' },
+                        { label: '正文', value: 'body' }
+                    ]
+                },
+                {
+                    name: 'fontColor',
+                    label: '字体颜色',
+                    type: 'input', // 使用颜色选择器
+                },
+                {
+                    name: 'textAlign',
+                    label: '文本对齐',
+                    type: 'select',
+                    options: [
+                        { label: '左对齐', value: 'left' },
+                        { label: '居中', value: 'center' },
+                        { label: '右对齐', value: 'right' }
+                    ]
+                },
+                {
+                    name: 'lineHeight',
+                    label: '行高',
+                    type: 'input',
+                }
+            ]
+        },
+        Image : {
+            name: 'Image',
+            defaultProps: {
+                alt: 'Image',
+                fallback: '',
+                height: '300',
+                placeholder: null,
+                preview: true,
+                src: '',
+                width: '400',
+                onError: null,
+            },
+            desc: '图片',
+            dev: ImageDev, // 假设你有一个 ImageDev 组件
+            prod: ImageProd, // 假设你有一个 ImageProd 组件
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber',
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber',
+                }
+            ],
+            setter: [
+                {
+                    name: 'alt',
+                    label: '图像描述',
+                    type: 'input',
+                },
+                {
+                    name: 'fallback',
+                    label: '加载失败容错地址',
+                    type: 'input',
+                },
+                {
+                    name: 'placeholder',
+                    label: '加载占位',
+                    type: 'input',
+                },
+                {
+                    name: 'preview',
+                    label: '预览参数',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 修正为布尔值
+                        { label: 'false', value: false }
+                    ]
+                },
+                {
+                    name: 'src',
+                    label: '图片地址',
+                    type: 'input',
+                },
+                {
+                    name: 'onError',
+                    label: '加载错误回调',
+                    type: 'input',
+                }
+            ]
+        }
         
 
         

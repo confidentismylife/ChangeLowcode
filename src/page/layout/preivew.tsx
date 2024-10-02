@@ -5,84 +5,95 @@ import { message } from "antd";
 import { ActionConfig } from "../editor/components/Setting/ActionModal";
 
 interface PreviewProps {
-  components: Component[];  // 确保 props 结构正确
+  components: Component[];  // Ensure props structure is correct
 }
 
-export function Preview({ components }: PreviewProps) {  // 解构 props
+export function Preview({ components }: PreviewProps) {  // Destructure props
 
-    const { componentConfig } = useComponentConfigStore();
+  const { componentConfig } = useComponentConfigStore();
+  const componentRefs = useRef<Record<string, any>>({});
 
-    const componentRefs = useRef<Record<string, any>>({});
+  // Handle events based on component configuration
+  function handleEvent(component: Component) {
+    const props: Record<string, any> = {};
 
-    function handleEvent(component: Component) {
-        const props: Record<string, any> = {};
+    componentConfig[component.name]?.events?.forEach((event) => {
+      const eventConfig = component.props[event.name];
 
-        componentConfig[component.name]?.events?.forEach((event) => {
-            const eventConfig = component.props[event.name];
-
-            if (eventConfig) {
-                props[event.name] = (...args: any[]) => {
-                    eventConfig?.actions?.forEach((action: ActionConfig) => {
-                        if (action.type === 'goToLink') {
-                            window.location.href = action.url;
-                        } else if (action.type === 'showMessage') {
-                            if (action.config.type === 'success') {
-                                message.success(action.config.text);
-                            } else if (action.config.type === 'error') {
-                                message.error(action.config.text);
-                            }
-                        } else if (action.type === 'customJS') {
-                            const func = new Function('context', 'args', action.code);
-                            func({
-                                name: component.name,
-                                props: component.props,
-                                showMessage(content: string) {
-                                    message.success(content);
-                                }
-                            }, args);
-                        } else if (action.type === 'componentMethod') {
-                            const comp = componentRefs.current[action.config.componentId];
-                            if (comp) {
-                                comp[action.config.method]?.(...args);
-                            }
-                        }
-                    });
-                };
+      if (eventConfig) {
+        props[event.name] = (...args: any[]) => {
+          eventConfig?.actions?.forEach((action: ActionConfig) => {
+            if (action.type === 'goToLink') {
+              window.location.href = action.url;
+            } else if (action.type === 'showMessage') {
+              if (action.config.type === 'success') {
+                message.success(action.config.text);
+              } else if (action.config.type === 'error') {
+                message.error(action.config.text);
+              }
+            } else if (action.type === 'customJS') {
+              const func = new Function('context', 'args', action.code);
+              func({
+                name: component.name,
+                props: component.props,
+                showMessage(content: string) {
+                  message.success(content);
+                }
+              }, args);
+            } else if (action.type === 'componentMethod') {
+              const comp = componentRefs.current[action.config.componentId];
+              if (comp) {
+                comp[action.config.method]?.(...args);
+              }
             }
-        });
-        return props;
-    }
+          });
+        };
+      }
+    });
 
-    function renderComponents(components: Component[]): React.ReactNode {
-        return components.map((component: Component) => {
-            const config = componentConfig?.[component.name];
+    return props;
+  }
 
-            if (!config?.prod) {
-                return null;
-            }
-            
-            return React.createElement(
-                config.prod,
-                {
-                    key: component.id,
-                    id: component.id,
-                    name: component.name,
-                    styles: component.styles,
-                    ref: (ref: Record<string, any>) => { componentRefs.current[component.id] = ref; },
-                    ...config.defaultProps,
-                    ...component.props,
-                    ...handleEvent(component),
-                },
-                renderComponents(component.children || [])
-            );
-        });
-    }
+  // Render components recursively
+  function renderComponents(components: Component[]): React.ReactNode {
+    return components.map((component: Component) => {
+      const config = componentConfig?.[component.name];
 
-    return (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
-            <div className="bg-white p-4 rounded-lg shadow-md">
-                {renderComponents(components)}
-            </div>
-        </div>
-    );
+      if (!config?.prod) {
+        return null;
+      }
+           // Set component styles using x and y properties
+           const style = {
+            position: 'absolute', // Absolute positioning
+            left: component.x ?? 0, // Default x position
+            top: component.y ?? 0, // Default y position
+            ...component.styles, // Merge other styles
+        };
+
+      // Create the component with its props
+      return React.createElement(
+        config.prod,
+        {
+          key: component.id,
+          id: component.id,
+          name: component.name,
+          styles: style, // Pass styles to the component
+          ref: (ref: Record<string, any>) => { componentRefs.current[component.id] = ref; },
+          ...config.defaultProps,
+          ...component.props,
+          ...handleEvent(component), // Attach event handlers
+        },
+        renderComponents(component.children || []) // Render children recursively
+      );
+    });
+  }
+
+  return (
+    <div className="relative  bg-white p-4 rounded-lg shadow-md h-[570px] overflow-auto">
+      {/* Use a wrapper for positioning and layout */}
+   
+        {renderComponents(components)}
+    
+    </div>
+  );
 }

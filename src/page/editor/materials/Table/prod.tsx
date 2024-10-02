@@ -1,55 +1,31 @@
 import { Table as AntdTable } from 'antd';
-import dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import React, { useMemo } from 'react';
 import { CommonComponentProps } from '../../interface';
 
-const Table = ({ url, children }: CommonComponentProps) => {
-
-  const [data, setData] = useState<Array<Record<string, any>>>([]);
-  const [loading, setLoading] = useState(false);
-
-  const getData = async () => {
-    if (url) {
-      setLoading(true);
-
-      const { data } = await axios.get(url);
-      setData(data);
-
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const columns = useMemo(() => {
-    return React.Children.map(children, (item: any) => {
-        if (item?.props?.type === 'date') {
+function Table({ id, children, styles }: CommonComponentProps) {
+    const columns = useMemo(() => {
+        return React.Children.map(children, (item: any) => {
             return {
-                title: item.props?.title,
+                title: <div className='m-[-16px] p-[16px]' data-component-id={item.props?.id}>{item.props?.title}</div>,
                 dataIndex: item.props?.dataIndex,
-                render: (value: any) => value ? dayjs(value).format('YYYY-MM-DD') : null,
-            }
-        } else {
-            return {
-                title: item.props?.title,
-                dataIndex: item.props?.dataIndex,
-            }
-        }
-    })
-  }, [children]);
+                key: item.props?.id // 使用 item.props?.id 作为 key
+            };
+        });
+    }, [children]);
 
-  return (
-    <AntdTable
-      columns={columns}
-      dataSource={data}
-      pagination={false}
-      rowKey="id"
-      loading={loading}
-    />
-  );
+    return (
+        <div
+            className="w-[100%]"
+            data-component-id={id}
+            style={styles}
+        >
+            <AntdTable
+                columns={columns}
+                dataSource={[]} // 根据需要填充数据源
+                pagination={false}
+            />
+        </div>
+    );
 }
 
 export default Table;

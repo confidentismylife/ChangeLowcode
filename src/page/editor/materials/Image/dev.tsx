@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import useComponentsDrop from "../../stores/components-drop";
-import { useMaterailDrop } from "../../hooks/useMaterailDrop";
+import { useRef, useState } from "react";
+
 import { CommonComponentProps } from "../../interface";
-import { useDrag } from "react-dnd";
+import type { DroppedItem } from '../../../type/DroppedItem';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css'; // 引入 Resizable 样式
 import './Image.css'; // 引入 CSS 样式
@@ -37,35 +36,29 @@ const Image = ({
     width = '300px', // 默认宽度
     onError,
 }: ImageProps) => {
-    const { components } = useComponentsDrop();
-    const { canDrop, drop } = useMaterailDrop([...components], id);
     const [srcc, setSrcc] = useState<string>(src || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
-    const imgRef = useRef<HTMLImageElement>(null);
+    const imgRef = useRef<HTMLDivElement>(null); // 绑定到 div，而不是 img
     const [resizableWidth, setWidth] = useState<number>(typeof width === 'number' ? width : 300);
     const [resizableHeight, setHeight] = useState<number>(typeof height === 'number' ? height : 200);
     const [isResizing, setIsResizing] = useState(false); // 控制是否正在调整大小
-    const [_, drag] = useDrag({
-        type: name,
-        item: {
-            type: name,
-            dragType: 'move',
-            id: id
-        }
-    });
 
-    useEffect(() => {
-        if (imgRef.current) {
-            drag(imgRef.current);
-            drop(imgRef.current);
-        }
-    }, [drag, drop]);
+    const ppp: DroppedItem = {
+        id: id,
+        name: name,
+        dragType: 'move',
+    };
+    
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData('text/plain', JSON.stringify(ppp)); // 设置拖拽数据
+        console.log(132133131231)
+    };
 
     const handleError: React.ReactEventHandler<HTMLImageElement> = (event) => {
         if (onError) {
             onError(event);
         }
         if (fallback && imgRef.current) {
-            imgRef.current.src = fallback;
+            (imgRef.current.firstChild as HTMLImageElement).src = fallback; // 修改为正确的 img 元素
         }
     };
 
@@ -92,29 +85,20 @@ const Image = ({
     };
 
     return (
-        <Resizable
-            width={resizableWidth}
-            height={resizableHeight}
-            onResize={handleResize}
-            onResizeStart={handleResizeStart}
-            onResizeStop={handleResizeStop}
-            resizeHandles={['se']} // 设置调整大小的句柄位置
+        <div
+            data-component-id={id}
+            ref={imgRef} // 将 ref 绑定到 div，而不是 img
+            draggable // 使 div 可拖拽
+            onDragStart={handleDragStart} // 处理拖动事件
+            style={{ ...mergedStyles, width: resizableWidth, height: resizableHeight }} // 使用动态宽高
         >
-            <div
-                data-component-id={id}
-                ref={imgRef}
-                className={`img-container ${isResizing ? 'resizing' : ''}`} // 按下时添加 'resizing' 类
-                style={{ ...mergedStyles, width: resizableWidth, height: resizableHeight }}
-            >
-                <img
-                    src={srcc}
-                    alt={alt}
-                    onError={handleError}
-                    style={{ width: '100%', height: '100%' }}
-                />
-                {placeholder && <div>{placeholder}</div>}
-            </div>
-        </Resizable>
+            <img
+                src={srcc}
+                alt={alt}
+                onError={handleError}
+                style={{ width: '100%', height: '100%' }} // 图片填满父容器
+            />
+        </div>
     );
 };
 

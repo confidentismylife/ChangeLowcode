@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import useComponentsDrop from "../../stores/components-drop";
-import { useMaterailDrop } from "../../hooks/useMaterailDrop";
+import { useRef, useState } from "react";
+
 import { CommonComponentProps } from "../../interface";
-import { useDrag } from "react-dnd";
-import { Image as AntdImage } from 'antd';
+import type { DroppedItem } from '../../../type/DroppedItem';
+import { Resizable } from 'react-resizable';
+import 'react-resizable/css/styles.css'; // 引入 Resizable 样式
+import './Image.css'; // 引入 CSS 样式
 
 interface ImageProps extends CommonComponentProps {
     alt?: string;
@@ -25,7 +26,6 @@ type PreviewType = {
 const Image = ({
     id,
     name,
-    children,
     styles,
     alt,
     fallback,
@@ -36,59 +36,68 @@ const Image = ({
     width = '300px', // 默认宽度
     onError,
 }: ImageProps) => {
-    const { components } = useComponentsDrop();
-    const { canDrop, drop } = useMaterailDrop([...components], id);
-    const [srcc, setSrcc] = useState<string>('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
+    const [srcc, setSrcc] = useState<string>(src || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
+    const imgRef = useRef<HTMLDivElement>(null); // 绑定到 div，而不是 img
+    const [resizableWidth, setWidth] = useState<number>(typeof width === 'number' ? width : 300);
+    const [resizableHeight, setHeight] = useState<number>(typeof height === 'number' ? height : 200);
+    const [isResizing, setIsResizing] = useState(false); // 控制是否正在调整大小
 
-    const imgRef = useRef<HTMLImageElement>(null);
-    const [_, drag] = useDrag({
-        type: name,
-        item: {
-            type: name,
-            dragType: 'move',
-            id: id
-        }
-    });
-
-    useEffect(() => {
-        if (imgRef.current) {
-            drag(imgRef.current);
-            drop(imgRef.current);
-        }
-    }, [drag, drop]);
+    const ppp: DroppedItem = {
+        id: id,
+        name: name,
+        dragType: 'move',
+    };
+    
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData('text/plain', JSON.stringify(ppp)); // 设置拖拽数据
+        console.log(132133131231)
+    };
 
     const handleError: React.ReactEventHandler<HTMLImageElement> = (event) => {
         if (onError) {
             onError(event);
         }
         if (fallback && imgRef.current) {
-            imgRef.current.src = fallback;
+            (imgRef.current.firstChild as HTMLImageElement).src = fallback; // 修改为正确的 img 元素
+        }
+    };
+
+    const handleResizeStart = () => {
+        setIsResizing(true); // 鼠标按下时开始调整大小
+    };
+
+    const handleResizeStop = () => {
+        setIsResizing(false); // 鼠标松开时停止调整大小
+    };
+
+    const handleResize = (event: any, { size }: { size: { width: number, height: number } }) => {
+        if (isResizing) { // 仅当鼠标按下时允许调整大小
+            setWidth(size.width);
+            setHeight(size.height);
         }
     };
 
     const mergedStyles = {
         ...styles,
-        width: width || '40px',
-        height: height || '50px',
-        display: 'inline-block', // 设置为 inline-block
-        padding: '4px', // 设置内边距
+        display: 'inline-block',
+        padding: '4px',
+        transition: 'width 0.3s ease, height 0.3s ease', // 添加平滑过渡动画
     };
 
     return (
         <div
             data-component-id={id}
-            ref={imgRef}
-            style={mergedStyles}
-          
+            ref={imgRef} // 将 ref 绑定到 div，而不是 img
+            draggable // 使 div 可拖拽
+            onDragStart={handleDragStart} // 处理拖动事件
+            style={{ ...mergedStyles, width: resizableWidth, height: resizableHeight }} // 使用动态宽高
         >
-            <AntdImage
+            <img
                 src={srcc}
                 alt={alt}
                 onError={handleError}
-                height={'150px'}
-                width={'180px'}
+                style={{ width: '100%', height: '100%' }} // 图片填满父容器
             />
-            {placeholder && <div>{placeholder}</div>}
         </div>
     );
 };
