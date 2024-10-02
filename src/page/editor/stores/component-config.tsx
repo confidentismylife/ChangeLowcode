@@ -468,12 +468,12 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                 }
             ],
         },
-        Text:{
-            name:'Text',
-            defaultProps:{},
-            desc:'文本',
-            dev:TextDev,
-            prod:TextProd,
+        Text: {
+            name: 'Text',
+            defaultProps: {},
+            desc: '文本',
+            dev: TextDev,
+            prod: TextProd,
             stylesSetter: [
                 {
                     name: 'width',
@@ -486,7 +486,7 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                     type: 'inputNumber',
                 }
             ],
-            setter:[
+            setter: [
                 {
                     name: 'text',
                     label: '文本',
@@ -500,9 +500,36 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                         { label: 'true', value: true }, // 修正为布尔值
                         { label: 'false', value: false }
                     ]
+                },
+                {
+                    name: 'mode',
+                    label: '模式',
+                    type: 'select',
+                    options: [
+                        { label: '标题', value: 'title' },
+                        { label: '正文', value: 'body' }
+                    ]
+                },
+                {
+                    name: 'fontColor',
+                    label: '字体颜色',
+                    type: 'input', // 使用颜色选择器
+                },
+                {
+                    name: 'textAlign',
+                    label: '文本对齐',
+                    type: 'select',
+                    options: [
+                        { label: '左对齐', value: 'left' },
+                        { label: '居中', value: 'center' },
+                        { label: '右对齐', value: 'right' }
+                    ]
+                },
+                {
+                    name: 'lineHeight',
+                    label: '行高',
+                    type: 'input',
                 }
-                
-           
             ]
         },
         Image : {

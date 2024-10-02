@@ -10,9 +10,12 @@ export interface Component {
   desc: string;
   children?: Component[];
   parentId?: number;
-  project?: string|number;
-  uindex?: string|number;
+  project?: string | number;
+  uindex?: string | number;
+  x?: number; // 新增 x 属性
+  y?: number; // 新增 y 属性
 }
+
 
 interface State {
   components: Component[];

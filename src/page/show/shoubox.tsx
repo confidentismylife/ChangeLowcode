@@ -42,7 +42,7 @@ export default function ShowBox({ schema, title, desc, imageSrc, children, onNav
 
   return (
     <div
-      className="bg-slate-100 ml-7 hover:bg-slate-400 text-slate-800 w-80 h-56 rounded-lg shadow-lg p-4 flex flex-col justify-between relative cursor-pointer transition-all duration-200 ease-in-out"
+      className="bg-slate-100 ml-7 hover:bg-slate-400 mt-5 text-slate-800 w-80 h-56 rounded-lg shadow-lg p-4 flex flex-col justify-between relative cursor-pointer transition-all duration-200 ease-in-out"
       onClick={handleNavigate}
     >
       <div className="absolute top-4 left-4">

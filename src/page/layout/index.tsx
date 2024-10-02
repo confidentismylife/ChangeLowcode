@@ -65,7 +65,9 @@ export default function LayputPlay() {
             className="h-full border-r-0"
             items={items3}
             onClick={handleMenuClick}
-          />
+          >
+            
+          </Menu>
         </Sider>
         <Layout className="p-6 bg-gray-100">
           <Content className="p-6 bg-white rounded-lg shadow-lg overflow-auto">

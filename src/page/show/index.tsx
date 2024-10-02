@@ -4,6 +4,7 @@ import ShowBox from './shoubox';
 import { Button, Layout, Menu } from 'antd';
 import { useComponentsStore } from '../editor/stores/component-total';
 import bgImage from '../../assets/bg.png'; // 根据相对路径导入图片
+import axios from 'axios';
 
 const { Header, Content, Sider } = Layout;
 
@@ -56,17 +57,21 @@ export default function Show() {
     }
   };
 
+  const handleSendRequest = () => {
+    axios.get('http://localhost/api/data')
+      .then(response => {
+        console.log('Response from Koa server:', response.data);
+        // 在这里处理响应数据
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
   return (
-    <Layout className="h-screen">
+    <Layout className="h-screen ">
       <Header className="flex items-center justify-between bg-gray-900 text-white shadow-lg p-4">
         <div className="text-2xl font-bold">ChangeLowCode</div>
-        <Button
-          type="primary"
-          className="ml-auto"
-          onClick={() => { navigate('/edit'); }}
-        >
-          + 创建表单
-        </Button>
       </Header>
       <Layout>
         <Sider width={200} className="bg-gray-800 text-white">
@@ -83,10 +88,24 @@ export default function Show() {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout className="p-6 bg-gray-100">
-          <Content className="p-6 bg-white rounded-lg shadow-lg flex center overflow-y-visible">
+        <Layout className="p-6 bg-gray-200 ">
+          <Content className=" rounded-lg shadow-xl flex center overflow-y-visible relative bg-gray-100 ">
             {select === 1 ? (
-              <div className='overflow-auto flex flex-wrap m-10 w-full'>
+              <div className='overflow-auto flex flex-wrap ml-10 mt-16'>
+                <Button
+                  type="primary"
+                  className="ml-auto absolute left-10 top-6"
+                  onClick={() => { navigate('/edit'); }}
+                >
+                  + 创建表单
+                </Button>
+                <Button
+                  type="primary"
+                  className="ml-auto absolute left-40 top-6"
+                  onClick={handleSendRequest}
+                >
+                  + 发送请求
+                </Button>
                 {data?.map((item) => (
                   <ShowBox
                     imageSrc={bgImage}

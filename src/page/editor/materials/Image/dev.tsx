@@ -3,7 +3,9 @@ import useComponentsDrop from "../../stores/components-drop";
 import { useMaterailDrop } from "../../hooks/useMaterailDrop";
 import { CommonComponentProps } from "../../interface";
 import { useDrag } from "react-dnd";
-import { Image as AntdImage } from 'antd';
+import { Resizable } from 'react-resizable';
+import 'react-resizable/css/styles.css'; // 引入 Resizable 样式
+import './Image.css'; // 引入 CSS 样式
 
 interface ImageProps extends CommonComponentProps {
     alt?: string;
@@ -25,7 +27,6 @@ type PreviewType = {
 const Image = ({
     id,
     name,
-    children,
     styles,
     alt,
     fallback,
@@ -38,9 +39,11 @@ const Image = ({
 }: ImageProps) => {
     const { components } = useComponentsDrop();
     const { canDrop, drop } = useMaterailDrop([...components], id);
-    const [srcc, setSrcc] = useState<string>('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
-
+    const [srcc, setSrcc] = useState<string>(src || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
     const imgRef = useRef<HTMLImageElement>(null);
+    const [resizableWidth, setWidth] = useState<number>(typeof width === 'number' ? width : 300);
+    const [resizableHeight, setHeight] = useState<number>(typeof height === 'number' ? height : 200);
+    const [isResizing, setIsResizing] = useState(false); // 控制是否正在调整大小
     const [_, drag] = useDrag({
         type: name,
         item: {
@@ -66,29 +69,52 @@ const Image = ({
         }
     };
 
+    const handleResizeStart = () => {
+        setIsResizing(true); // 鼠标按下时开始调整大小
+    };
+
+    const handleResizeStop = () => {
+        setIsResizing(false); // 鼠标松开时停止调整大小
+    };
+
+    const handleResize = (event: any, { size }: { size: { width: number, height: number } }) => {
+        if (isResizing) { // 仅当鼠标按下时允许调整大小
+            setWidth(size.width);
+            setHeight(size.height);
+        }
+    };
+
     const mergedStyles = {
         ...styles,
-        width: width || '40px',
-        height: height || '50px',
-        display: 'inline-block', // 设置为 inline-block
-        padding: '4px', // 设置内边距
+        display: 'inline-block',
+        padding: '4px',
+        transition: 'width 0.3s ease, height 0.3s ease', // 添加平滑过渡动画
     };
 
     return (
-        <div
-            data-component-id={id}
-            ref={imgRef}
-            style={mergedStyles}
+        <Resizable
+            width={resizableWidth}
+            height={resizableHeight}
+            onResize={handleResize}
+            onResizeStart={handleResizeStart}
+            onResizeStop={handleResizeStop}
+            resizeHandles={['se']} // 设置调整大小的句柄位置
         >
-            <AntdImage
-                src={srcc}
-                alt={alt}
-                onError={handleError}
-                height={'150px'}
-                width={'180px'}
-            />
-            {placeholder && <div>{placeholder}</div>}
-        </div>
+            <div
+                data-component-id={id}
+                ref={imgRef}
+                className={`img-container ${isResizing ? 'resizing' : ''}`} // 按下时添加 'resizing' 类
+                style={{ ...mergedStyles, width: resizableWidth, height: resizableHeight }}
+            >
+                <img
+                    src={srcc}
+                    alt={alt}
+                    onError={handleError}
+                    style={{ width: '100%', height: '100%' }}
+                />
+                {placeholder && <div>{placeholder}</div>}
+            </div>
+        </Resizable>
     );
 };
 
