@@ -7,8 +7,10 @@ import { createPortal } from 'react-dom';
 import { getComponentById, useComponetsStore } from '../../stores/components';
 import { Dropdown, Popconfirm, Space } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { useComponentXy } from '../../stores/component-xy'; // 导入 useComponentXy
 
 interface SelectedMaskProps {
+  id?:number;
   portalWrapperClassName: string;
   containerClassName: string;
   componentId: number;
@@ -16,7 +18,7 @@ interface SelectedMaskProps {
   scrollLeftlength: number;
 }
 
-function SelectedMask({ containerClassName, portalWrapperClassName, componentId, scrollToplength, scrollLeftlength }: SelectedMaskProps) {
+function SelectedMask({ id,containerClassName, portalWrapperClassName, componentId, scrollToplength, scrollLeftlength }: SelectedMaskProps) {
   const [position, setPosition] = useState({
     left: 0,
     top: 0,
@@ -27,6 +29,10 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
   });
   const [isReady, setIsReady] = useState(false);
   const { components, curComponentId, curComponent, deleteComponent, setCurComponentId, updateComponentStyles } = useComponetsStore();
+  
+  // 获取 Zustand 状态管理中的 setXy 方法
+  const { setXy,componentXy } = useComponentXy();
+  const [x,setx]=useState(null);
   const updatePosition = () => {
     if (!componentId) return;
 
@@ -42,6 +48,7 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
     let labelTop = top - containerTop + container.scrollTop;
     let labelLeft = left - containerLeft + width;
 
+    // 更新 position 状态
     setPosition({
       top: top - containerTop + container.scrollTop - scrollToplength,
       left: left - containerLeft,
@@ -50,6 +57,16 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
       labelTop,
       labelLeft,
     });
+
+    // 更新 Zustand 状态管理中的位置信息
+    setXy(
+      top - containerTop + container.scrollTop - scrollToplength,
+      left - containerLeft,
+      width,
+      height,
+      labelTop,
+      labelLeft
+    );
   };
 
   const resizeHandler = () => {
@@ -63,6 +80,7 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
       updatePosition();
     }
   };
+
   useEffect(() => {
     checkReady();
     window.addEventListener('resize', resizeHandler);
@@ -185,7 +203,7 @@ function SelectedMask({ containerClassName, portalWrapperClassName, componentId,
     return dots;
   };
 
-  return createPortal((
+  return createPortal(( 
     <>
       <div
         style={{

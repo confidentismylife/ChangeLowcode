@@ -63,7 +63,7 @@ export function EditArea() {
 
     const handleClick: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
-
+        console.log(path);
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
 
@@ -104,7 +104,10 @@ export function EditArea() {
             className="h-[100%] edit-area overflow-auto"
             style={{ boxSizing: 'border-box', paddingRight: '17px', paddingBottom: '17px' }}
             onMouseOver={handleMouseOver}
-            onMouseLeave={() => setHoverComponentId(undefined)}
+            onMouseLeave={() => {setHoverComponentId(undefined)
+                console.log('hover')
+
+            }}
             onClick={handleClick}
         >
             {renderComponents(components)}
@@ -117,13 +120,14 @@ export function EditArea() {
                     scrollLeftlength={scrollLeftlength}
                 />
             )}
-            {curComponentId && (
+            {hoverComponentId && (
                 <SelectedMask
+                    id={hoverComponentId}
                     portalWrapperClassName="portal-wrapper"
                     containerClassName="edit-area"
-                    componentId={curComponentId}
+                    componentId={hoverComponentId}
                     scrollToplength={scrollToplength}
-                />
+                     scrollLeftlength={0}                />
             )}
             <div className="portal-wrapper"></div>
         </div>
