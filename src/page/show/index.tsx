@@ -1,5 +1,5 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ShowBox from './shoubox';
 import { Button, Layout, Menu } from 'antd';
 import { useComponentsStore } from '../editor/stores/component-total';
@@ -7,13 +7,6 @@ import bgImage from '../../assets/bg.png'; // 根据相对路径导入图片
 import axios from 'axios';
 
 const { Header, Content, Sider } = Layout;
-
-interface SchemaItem {
-  schema: string | number;
-  title: string;
-  desc: string;
-  children?: any[];
-}
 
 // 定义 Component 接口，表示一个组件的结构
 interface Component {
@@ -31,6 +24,7 @@ interface Component {
 interface FormObject {
   fname: string; // 表单对象的名称
   componentForm: Component[]; // 表单对象包含的组件列表
+  isTemplate: boolean; // 表单对象是否为模板
 }
 
 // 定义 ObjectTotal 接口，表示状态管理的整体结构
@@ -69,7 +63,7 @@ export default function Show() {
   };
 
   return (
-    <Layout className="h-screen ">
+    <Layout className="h-screen">
       <Header className="flex items-center justify-between bg-gray-900 text-white shadow-lg p-4">
         <div className="text-2xl font-bold">ChangeLowCode</div>
       </Header>
@@ -89,7 +83,7 @@ export default function Show() {
           </Menu>
         </Sider>
         <Layout className="p-6 bg-gray-200 ">
-          <Content className=" rounded-lg shadow-xl flex center overflow-y-visible relative bg-gray-100 ">
+          <Content className="rounded-lg shadow-xl flex center overflow-y-visible relative bg-gray-100 ">
             {select === 1 ? (
               <div className='overflow-auto flex flex-wrap ml-10 mt-16'>
                 <Button
@@ -116,7 +110,16 @@ export default function Show() {
                 ))}
               </div>
             ) : select === 2 ? (
-              <div>模板应用内容</div>
+              <div className='overflow-auto flex flex-wrap ml-10 mt-16'>
+                {data?.filter(item => item.isTemplate).map((item) => (
+                  <ShowBox
+                    imageSrc={bgImage}
+                    key={item.fname} // 使用 fname 作为唯一键
+                    title={item.fname}
+                    onNavigate={() => handleNavigate(item.fname)}
+                  />
+                ))}
+              </div>
             ) : select === 3 ? (
               <div>性能监控内容</div>
             ) : null}

@@ -23,6 +23,9 @@ import TextDev from '../materials/Text/dev';
 import TextProd from '../materials/Text/prod';
 import ImageDev from '../materials/Image/dev';
 import ImageProd from '../materials/Image/prod';
+import WaterfallDev from '../materials/Waterfull/dev';
+import WaterfallProd from '../materials/Waterfull/prod';
+
 export interface ComponentSetter {
     name: string;
     label: string;
@@ -595,10 +598,20 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                     type: 'input',
                 }
             ]
-        }
-        
+        },
+        Waterfall :{
+            name: 'Waterfall',
+            defaultProps: {
+              waterfallType: 'column',
+              columnWidth: 200,
+              gapSize: 10,
+              maxColumns: 5,
+            },
+            desc: '瀑布流',
+            dev: WaterfallDev,
+            prod: {}
 
-        
+        }
     },
     registerComponent: (name, componentConfig) => set((state) => {
         return {

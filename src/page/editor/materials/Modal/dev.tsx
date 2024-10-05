@@ -24,7 +24,6 @@ function Modal({ id, children, title, styles ,name }: CommonComponentProps) {
             onDragOver={handleDragOver} // 处理拖拽进入事件
             onDrop={handleDrop} // 处理放置事件
         >
-            <h4>{title}</h4>
             <div>
                 {children}
             </div>

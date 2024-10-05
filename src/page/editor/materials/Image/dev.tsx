@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-
+import { useRef, useState, useEffect } from "react";
 import { CommonComponentProps } from "../../interface";
 import type { DroppedItem } from '../../../type/DroppedItem';
 import { Resizable } from 'react-resizable';
@@ -15,6 +14,7 @@ interface ImageProps extends CommonComponentProps {
     src: string;
     width?: string | number;
     onError?: React.ReactEventHandler<HTMLImageElement>;
+    styles?: React.CSSProperties; // 添加 styles 属性以接收外部样式
 }
 
 type PreviewType = {
@@ -29,19 +29,22 @@ const Image = ({
     styles,
     alt,
     fallback,
-    height = '200px', // 默认高度
     placeholder,
     preview = true,
     src,
-    width = '300px', // 默认宽度
     onError,
 }: ImageProps) => {
     const [srcc, setSrcc] = useState<string>(src || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
-    const imgRef = useRef<HTMLDivElement>(null); // 绑定到 div，而不是 img
-    const [resizableWidth, setWidth] = useState<number>(typeof width === 'number' ? width : 300);
-    const [resizableHeight, setHeight] = useState<number>(typeof height === 'number' ? height : 200);
-    const [isResizing, setIsResizing] = useState(false); // 控制是否正在调整大小
-
+    const imgRef = useRef<HTMLDivElement>(null);
+    const [resizableWidth, setWidth] = useState<number>(300); // 默认宽度
+    const [resizableHeight, setHeight] = useState<number>(200); // 默认高度
+    const [isResizing, setIsResizing] = useState(false);
+    
+    useEffect(() => {
+        console.log('图片');
+        console.log(styles);
+    }, [styles]);
+    
     const ppp: DroppedItem = {
         id: id,
         name: name,
@@ -49,8 +52,7 @@ const Image = ({
     };
     
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        event.dataTransfer.setData('text/plain', JSON.stringify(ppp)); // 设置拖拽数据
-        console.log(132133131231)
+        event.dataTransfer.setData('text/plain', JSON.stringify(ppp));
     };
 
     const handleError: React.ReactEventHandler<HTMLImageElement> = (event) => {
@@ -58,39 +60,51 @@ const Image = ({
             onError(event);
         }
         if (fallback && imgRef.current) {
-            (imgRef.current.firstChild as HTMLImageElement).src = fallback; // 修改为正确的 img 元素
+            (imgRef.current.firstChild as HTMLImageElement).src = fallback;
         }
     };
 
     const handleResizeStart = () => {
-        setIsResizing(true); // 鼠标按下时开始调整大小
+        setIsResizing(true);
     };
 
     const handleResizeStop = () => {
-        setIsResizing(false); // 鼠标松开时停止调整大小
+        setIsResizing(false);
     };
 
     const handleResize = (event: any, { size }: { size: { width: number, height: number } }) => {
-        if (isResizing) { // 仅当鼠标按下时允许调整大小
+        if (isResizing) {
             setWidth(size.width);
             setHeight(size.height);
         }
     };
 
-    const mergedStyles = {
-        ...styles,
-        display: 'inline-block',
-        padding: '4px',
-        transition: 'width 0.3s ease, height 0.3s ease', // 添加平滑过渡动画
-    };
+    // 优先使用 styles 中的宽和高
+    useEffect(() => {
+        if (styles) {
+            if (styles.width) {
+                setWidth(typeof styles.width === 'number' ? styles.width : parseFloat(styles.width));
+            }
+            if (styles.height) {
+                setHeight(typeof styles.height === 'number' ? styles.height : parseFloat(styles.height));
+            }
+        }
+    }, [styles]);
 
     return (
         <div
             data-component-id={id}
-            ref={imgRef} // 将 ref 绑定到 div，而不是 img
-            draggable // 使 div 可拖拽
-            onDragStart={handleDragStart} // 处理拖动事件
-            style={{ ...mergedStyles, width: resizableWidth, height: resizableHeight }} // 使用动态宽高
+            ref={imgRef}
+            draggable
+            onDragStart={handleDragStart}
+            style={{
+                ...styles, // 合并外部样式
+                display: 'inline-block',
+                padding: '4px',
+                transition: 'width 0.3s ease, height 0.3s ease',
+                width: resizableWidth, // 使用更新后的宽度
+                height: resizableHeight, // 使用更新后的高度
+            }} // 使用合并后的样式
         >
             <img
                 src={srcc}

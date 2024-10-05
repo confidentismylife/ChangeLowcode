@@ -1,85 +1,78 @@
-import { Button, Space, Modal, Input } from 'antd';
+import { Button, Space, Modal, Input, Checkbox } from 'antd';
 import { useState } from 'react';
 import { useComponetsStore } from '../../stores/components';
 import { useAddRemoteComponentConfig } from '../../hooks/useAddRemoteComponentConfig';
 import { useAddRemoteComponentConfigVue } from '../../hooks/useAddRemoteComponentComfigVue';
 import { useNavigate } from 'react-router-dom';
 import { useComponentsShow } from '../../stores/component-show';
-import { useComponentsStore} from '../../stores/component-total';
+import { useComponentsStore } from '../../stores/component-total';
 
 export function Header() {
-    const { mode, setMode, setCurComponentId, components,clearComponents} = useComponetsStore();
-    const [modalVisibleReact, setModalVisibleReact] = useState(false); // 控制 React Modal 的显示
-    const [modalVisibleVue, setModalVisibleVue] = useState(false); // 控制 Vue Modal 的显示
-    const [inputUrlReact, setInputUrlReact] = useState(''); // 存储用户输入的 React 组件 URL
-    const [inputUrlVue, setInputUrlVue] = useState(''); // 存储用户输入的 Vue 组件 URL
-    const [remoteUrlReact, setRemoteUrlReact] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component@1.0.5/dist/bundle.umd.js'); // React 初始远程 URL
-    const [remoteUrlVue, setRemoteUrlVue] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js'); // Vue 初始远程 URL
+    const { mode, setMode, setCurComponentId, components, clearComponents } = useComponetsStore();
+    const [modalVisibleReact, setModalVisibleReact] = useState(false);
+    const [modalVisibleVue, setModalVisibleVue] = useState(false);
+    const [inputUrlReact, setInputUrlReact] = useState('');
+    const [inputUrlVue, setInputUrlVue] = useState('');
+    const [remoteUrlReact, setRemoteUrlReact] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component@1.0.5/dist/bundle.umd.js');
+    const [remoteUrlVue, setRemoteUrlVue] = useState('https://cdn.jsdelivr.net/npm/pjw-remote-component-vue@1.0.3/dist/bundle.umd.js');
     const navigate = useNavigate();
-    const {addFormObject,addComponentToForm,objectTotal} = useComponentsStore();
+    const { addFormObject, addComponentToForm, objectTotal } = useComponentsStore();
     const [locodeVisible, setLocodeVisible] = useState(false);
-    const [name, setName] = useState(''); // 存储用户输入的名称
-    const [pm, setpm] = useState(''); // 存储用户输入的名称
-    // 调用自定义 Hook 分别加载远程 React 和 Vue 组件
+    const [name, setName] = useState('');
+    const [pm, setpm] = useState('');
+    const [isTemplate, setIsTemplate] = useState(false); // 存储是否设置为模板的状态
+
     useAddRemoteComponentConfig(remoteUrlReact);
     // useAddRemoteComponentConfigVue(remoteUrlVue);
 
-    // 处理 React 组件的 URL 输入并加载远程组件
     const handleLoadRemoteReactComponent = () => {
-        setRemoteUrlReact(inputUrlReact); // 设置远程 React URL
-        setModalVisibleReact(false); // 关闭 React Modal
+        setRemoteUrlReact(inputUrlReact);
+        setModalVisibleReact(false);
     };
 
-    // 处理 Vue 组件的 URL 输入并加载远程组件
     const handleLoadRemoteVueComponent = () => {
-        setRemoteUrlVue(inputUrlVue); // 设置远程 Vue URL
-        setModalVisibleVue(false); // 关闭 Vue Modal
+        setRemoteUrlVue(inputUrlVue);
+        setModalVisibleVue(false);
     };
 
     const slowhandel = () => {
-        // 确保组件有唯一的 id
         const componentWithId = {
             ...components[0],
-            uindex: components[0].id + Date.now(), // 如果没有 id，则生成一个唯一的时间戳作为 id
+            uindex: components[0].id + Date.now(),
             form: name,
         };
         
         const formObject = {
-            fname: pm, // 表单对象名称
-            componentForm: [componentWithId], // 组件数组
+            fname: pm,
+            componentForm: [componentWithId],
+            isTemplate : isTemplate, // 添加 isTemplate 到 formObject
         };
-    
-        // 检查 store 中是否已有相同 fname 的表单对象
+
         const existingForm = objectTotal.find((form) => form.fname === pm);
-    
+
         if (!existingForm) {
-            // 如果不存在，添加新的 FormObject
             addFormObject(formObject);
         } else {
-            // 如果已经存在，添加组件到现有的 FormObject
-            addComponentToForm(pm, componentWithId); // 传入已有的表单名称和新组件
+            addComponentToForm(pm, componentWithId);
         }
-        
-        // 其他操作
+
         setLocodeVisible(false);
-        navigate(`/`); // 导航回首页
-        clearComponents(); // 清理组件
+        navigate(`/`);
+        clearComponents();
     };
-    
 
     return (
         <div className='w-full h-full'>
             <div className='h-full flex justify-between items-center px-[20px] bg-gray-900 text-white shadow-lg'>
                 <div className='text-xl font-bold'>ChangeLowCode</div>
                 <Space>
-                <Button 
-                    type='primary' 
-                    onClick={() => {
-                        setLocodeVisible(true);
-             
-                    }} 
-                    className='px-4 py-2'>
-                    保存
+                    <Button 
+                        type='primary' 
+                        onClick={() => {
+                            setLocodeVisible(true);
+                        }} 
+                        className='px-4 py-2'>
+                        保存
                     </Button>
 
                     {mode === 'edit' && (
@@ -103,19 +96,17 @@ export function Header() {
                             退出预览
                         </Button>
                     )}
-                    {/* 加载远程 React 组件按钮 */}
                     <Button
                         type='primary'
-                        onClick={() => setModalVisibleReact(true)} // 点击按钮显示 React Modal
+                        onClick={() => setModalVisibleReact(true)} 
                         className='px-4 py-2'
                     >
                         加载远程 React 组件
                     </Button>
 
-                    {/* 加载远程 Vue 组件按钮 */}
                     <Button
                         type='primary'
-                        onClick={() => setModalVisibleVue(true)} // 点击按钮显示 Vue Modal
+                        onClick={() => setModalVisibleVue(true)} 
                         className='px-4 py-2'
                     >
                         加载远程 Vue 组件
@@ -127,14 +118,14 @@ export function Header() {
             <Modal
                 title="输入远程 React 组件 URL"
                 open={modalVisibleReact}
-                onOk={handleLoadRemoteReactComponent} // 确认按钮点击时加载远程 React 组件
-                onCancel={() => setModalVisibleReact(false)} // 取消时关闭 React Modal
+                onOk={handleLoadRemoteReactComponent}
+                onCancel={() => setModalVisibleReact(false)}
                 className='rounded-lg shadow-lg'
             >
                 <Input
                     placeholder="输入远程 React 组件 URL"
                     value={inputUrlReact}
-                    onChange={(e) => setInputUrlReact(e.target.value)} // 监听 React URL 输入框变化
+                    onChange={(e) => setInputUrlReact(e.target.value)}
                     className='rounded-lg'
                 />
             </Modal>
@@ -143,14 +134,14 @@ export function Header() {
             <Modal
                 title="输入远程 Vue 组件 URL"
                 open={modalVisibleVue}
-                onOk={handleLoadRemoteVueComponent} // 确认按钮点击时加载远程 Vue 组件
-                onCancel={() => setModalVisibleVue(false)} // 取消时关闭 Vue Modal
+                onOk={handleLoadRemoteVueComponent}
+                onCancel={() => setModalVisibleVue(false)}
                 className='rounded-lg shadow-lg'
             >
                 <Input
                     placeholder="输入远程 Vue 组件 URL"
                     value={inputUrlVue}
-                    onChange={(e) => setInputUrlVue(e.target.value)} // 监听 Vue URL 输入框变化
+                    onChange={(e) => setInputUrlVue(e.target.value)}
                     className='rounded-lg'
                 />
             </Modal>
@@ -159,22 +150,32 @@ export function Header() {
             <Modal
                 title="保存低代码"
                 open={locodeVisible}
-                onOk={slowhandel} // 确认按钮点击时保存低代码组件
-                onCancel={() => setLocodeVisible(false)} // 取消时关闭 Modal
+                onOk={slowhandel}
+                onCancel={() => setLocodeVisible(false)}
                 className='rounded-lg shadow-lg'
+                style={{ padding: '20px' }}
             >
                 <Input
                     placeholder="输入表单名称"
                     value={name}
-                    onChange={(e) => setName(e.target.value)} // 监听输入框变化
+                    onChange={(e) => setName(e.target.value)}
                     className='rounded-lg'
+                    style={{ marginBottom: '16px', width: '100%' }}
                 />
-                     <Input
+                <Input
                     placeholder="输入项目名称"
                     value={pm}
-                    onChange={(e) => setpm(e.target.value)} // 监听输入框变化
+                    onChange={(e) => setpm(e.target.value)}
                     className='rounded-lg'
+                    style={{ marginBottom: '16px', width: '100%' }}
                 />
+                <Checkbox 
+                    style={{ marginTop: '16px' }}
+                    checked={isTemplate}
+                    onChange={(e) => setIsTemplate(e.target.checked)} // 监听复选框变化
+                >
+                    设置为模板
+                </Checkbox>
             </Modal>
         </div>
     );
