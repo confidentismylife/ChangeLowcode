@@ -16,12 +16,13 @@ const SNAP_THRESHOLD = 10;
 export function useDragAndDrop(id?: number) {
     const { addComponent, deleteComponent, components } = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
-    const { setXy } = useComponentXy(); // 从 Zustand 中获取 setXy 方法
+    const { setXy,componentXy } = useComponentXy(); // 从 Zustand 中获取 setXy 方法
 
     const updatePosition = (componentId: number, scrollToplength: number, containerClassName: string) => {
         if (!componentId) return;
-
-        const container = document.querySelector('.edit-area');
+    
+        setTimeout(()=>{
+            const container = document.querySelector('.edit-area');
         if (!container) return;
 
         const node = document.querySelector(`[data-component-id="${componentId}"]`);
@@ -32,7 +33,15 @@ export function useDragAndDrop(id?: number) {
 
         const labelTop = top - containerTop + container.scrollTop;
         const labelLeft = left - containerLeft + width;
- 
+        console.log(123123)
+        console.log({
+            top: top - containerTop + container.scrollTop - scrollToplength,
+            left: left - containerLeft,
+            width: width,
+            height: height,
+            labelTop: labelTop,
+            labelLeft: labelLeft,
+        })
         // 存入 Zustand 状态管理库
         setXy({
             top: top - containerTop + container.scrollTop - scrollToplength,
@@ -42,6 +51,8 @@ export function useDragAndDrop(id?: number) {
             labelTop: labelTop,
             labelLeft: labelLeft,
         });
+        },200)
+        
     };
 
     const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -50,7 +61,7 @@ export function useDragAndDrop(id?: number) {
 
     const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault(); // 防止默认行为
-
+        
         // 获取鼠标的位置
         const mouseX = event.clientX;
         const mouseY = event.clientY;
@@ -70,39 +81,42 @@ export function useDragAndDrop(id?: number) {
         // 根据拖拽的类型进行处理
         if (droppedItem.dragType === 'move') {
             const component = getComponentById(droppedItem.id, components);
-
-            if (component) {
-                // 获取移动组件的宽高
-                const componentWidth = component.props.width || 100; // 默认宽度
-                const componentHeight = component.props.height || 100; // 默认高度
-
-                // 重新计算相对于 Page 的位置
-                const adjustedX = relativeX - componentWidth / 4; // 使鼠标在新组件中心
-                const adjustedY = relativeY - componentHeight / 4;
-
-                // 吸附逻辑
-                const snapX = Math.round(adjustedX / 10) * 10; // 吸附到最近的 10 像素
-                const snapY = Math.round(adjustedY / 10) * 10;
-
-                // 处理边界，确保不会放置在负坐标上
-                const boundedX = Math.max(0, snapX);
-                const boundedY = Math.max(0, snapY);
-
-                // 处理移动逻辑
-                deleteComponent(droppedItem.id); // 删除原组件
-                addComponent({
-                    ...component,
-                    x: boundedX, // 使用调整后的 X 位置
-                    y: boundedY, // 使用调整后的 Y 位置
-                }, id);
-          
-                // 更新位置
-                updatePosition(droppedItem.id, 0, 'edit-area'); // 传入合适的参数
-            } else {
-                console.error(`Component with id ${droppedItem.id} not found for move operation.`);
-            }
+            setTimeout(() => {
+                if (component) {
+                    // 获取移动组件的宽高
+                    const componentWidth = component.props.width || 100; // 默认宽度
+                    const componentHeight = component.props.height || 100; // 默认高度
+    
+                    // 重新计算相对于 Page 的位置
+                    const adjustedX = relativeX - componentWidth / 4; // 使鼠标在新组件中心
+                    const adjustedY = relativeY - componentHeight / 4;
+    
+                    // 吸附逻辑
+                    const snapX = Math.round(adjustedX / 10) * 10; // 吸附到最近的 10 像素
+                    const snapY = Math.round(adjustedY / 10) * 10;
+    
+                    // 处理边界，确保不会放置在负坐标上
+                    const boundedX = Math.max(0, snapX);
+                    const boundedY = Math.max(0, snapY);
+    
+                    // 处理移动逻辑
+                    deleteComponent(droppedItem.id); // 删除原组件
+                    addComponent({
+                        ...component,
+                        x: boundedX, // 使用调整后的 X 位置
+                        y: boundedY, // 使用调整后的 Y 位置
+                    }, id);
+              
+                    // 更新位置
+                    updatePosition(droppedItem.id, 0, 'edit-area'); // 传入合适的参数
+                } else {
+                    console.error(`Component with id ${droppedItem.id} not found for move operation.`);
+                }
+            }, 0);
+            
         } else {
             const config = componentConfig[droppedItem.name];
+            console.log(config)
             // 检查 config 是否存在
             if (config) {
                 // 获取新组件的宽高
@@ -133,6 +147,7 @@ export function useDragAndDrop(id?: number) {
                 // 更新位置
                 updatePosition(id, 0, 'your-container-class-name'); // 传入合适的参数
             } else {
+                console.log(config,'config找不到')
                 console.error(`Component config for type ${droppedItem.name} is undefined`);
             }
         }

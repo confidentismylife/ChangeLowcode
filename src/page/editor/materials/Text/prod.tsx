@@ -25,7 +25,7 @@ const Text = ({
 
     const mergedStyles = {
         ...styles,
-        maxWidth: '100%', // 最大宽度为父元素的宽度
+        display: wrap ? 'block' : 'inline', // 根据 wrap 属性决定显示方式
         whiteSpace: wrap ? 'normal' : 'nowrap', // 根据 wrap 属性决定是否换行
         overflow: wrap ? 'visible' : 'hidden', // 根据 wrap 属性决定是否隐藏溢出内容
         textOverflow: wrap ? 'clip' : 'ellipsis', // 根据 wrap 属性决定是否显示省略号

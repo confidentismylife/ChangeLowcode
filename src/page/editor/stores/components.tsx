@@ -58,7 +58,7 @@ const creator: StateCreator<State & Action> = (set, get) => ({
           parentId,
           state.components
         );
-
+  
         if (parentComponent) {
           if (parentComponent.children) {
             parentComponent.children.push(component);
@@ -66,9 +66,10 @@ const creator: StateCreator<State & Action> = (set, get) => ({
             parentComponent.children = [component];
           }
         }
-
+        console.log(parentComponent?.children);
         component.parentId = parentId;
         return { components: [...state.components] };
+      
       }
       return { components: [...state.components, component] };
     }),

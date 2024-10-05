@@ -11,15 +11,10 @@ export const useComponentXy = create(persist(
             labelTop: 0,
             labelLeft: 0,
         },
-        setXy: (top, left, width, height, labelTop, labelLeft) => {
+        setXy: (newXy) => {
             set({
                 componentXy: {
-                    top,
-                    left,
-                    width,
-                    height,
-                    labelTop,
-                    labelLeft,
+                    ...newXy,
                 },
             });
         },

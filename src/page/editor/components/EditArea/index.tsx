@@ -3,14 +3,21 @@ import { useComponentConfigStore } from "../../stores/component-config";
 import { Component, useComponetsStore } from "../../stores/components";
 import HoverMask from "../HoverMask";
 import SelectedMask from "../SelectedMask";
+import { useComponentXy } from "../../stores/component-xy";
 
 export function EditArea() {
     const { components, curComponentId, setCurComponentId } = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
-
+    
     const editAreaRef = useRef<HTMLDivElement>(null);
     const [scrollToplength, setScrollToplength] = useState<number>(0);
     const [scrollLeftlength, setScrollLeftlength] = useState<number>(0);
+    const { componentXy } = useComponentXy();
+    
+    useEffect(() => {
+        console.log("componentXy changed:", componentXy);
+        renderSelectedMask()
+    }, [componentXy]); // 监听 componentXy 的变化
 
     function renderComponents(components: Component[]): React.ReactNode {
         return components.map((component: Component) => {
@@ -47,13 +54,11 @@ export function EditArea() {
     const handleMouseOver: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
 
-   
-        
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
-    
+
             const componentId = ele.dataset?.componentId;
-            
+
             if (componentId) {
                 setHoverComponentId(+componentId);
                 return;
@@ -63,7 +68,7 @@ export function EditArea() {
 
     const handleClick: MouseEventHandler = (e) => {
         const path = e.nativeEvent.composedPath();
-        console.log(path);
+  
         for (let i = 0; i < path.length; i += 1) {
             const ele = path[i] as HTMLElement;
 
@@ -98,15 +103,31 @@ export function EditArea() {
         };
     }, []);
 
+    function renderSelectedMask() {
+        console.log("renderSelectedMask componentXy:", componentXy);
+        return (
+            curComponentId && (
+                <SelectedMask
+                    id={curComponentId} // 使用 curComponentId 作为 id
+                    componentXyq={componentXy}
+                    portalWrapperClassName="portal-wrapper"
+                    containerClassName="edit-area"
+                    componentId={curComponentId}
+                    scrollToplength={scrollToplength}
+                    scrollLeftlength={scrollLeftlength} // 使用 scrollLeftlength 而不是 0
+                />
+            )
+        );
+    }
+
     return (
         <div
             ref={editAreaRef}
             className="h-[100%] edit-area overflow-auto"
             style={{ boxSizing: 'border-box', paddingRight: '17px', paddingBottom: '17px' }}
             onMouseOver={handleMouseOver}
-            onMouseLeave={() => {setHoverComponentId(undefined)
-                console.log('hover')
-
+            onMouseLeave={() => {
+                setHoverComponentId(undefined);
             }}
             onClick={handleClick}
         >
@@ -120,15 +141,7 @@ export function EditArea() {
                     scrollLeftlength={scrollLeftlength}
                 />
             )}
-            {hoverComponentId && (
-                <SelectedMask
-                    id={hoverComponentId}
-                    portalWrapperClassName="portal-wrapper"
-                    containerClassName="edit-area"
-                    componentId={hoverComponentId}
-                    scrollToplength={scrollToplength}
-                     scrollLeftlength={0}                />
-            )}
+            {renderSelectedMask()} {/* 调用 renderSelectedMask 函数 */}
             <div className="portal-wrapper"></div>
         </div>
     );

@@ -12,7 +12,7 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
 
     useEffect(() => {
         // 当 components 更新时打印到控制台
-        console.log("Updated components:", components);
+
     }, [components]);
 
     useEffect(() => {
@@ -20,8 +20,7 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
             const component = await loadVueAndRemoteComponent(url);
             if (component) {
                 setRemoteComponent(component);
-                console.log(component)
-                console.log(1231233131323)
+            
                 const names = Object.keys(component);
                 setComponentNames(names);
 
@@ -80,7 +79,7 @@ export const useAddRemoteComponentConfigVue = (url: string) => {
     // Type assertion to ensure it is a valid React component
     const Component = applyVueInReact(remoteComponent[ComponentName]) as React.ComponentType<any>;
     // 打印组件名称和 props
-    console.log(`Rendering component: ${ComponentName}`, props);
+
 
     return () => React.createElement(Component, props);
 };
