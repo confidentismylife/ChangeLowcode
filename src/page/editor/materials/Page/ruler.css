@@ -1,0 +1,39 @@
+
+.fs-ruler-container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .left {
+    position: relative;
+    width: 50px; /* 或根据需要调整 */
+  }
+  
+  .right {
+    flex: 1;
+    position: relative;
+  }
+  
+  .content-container {
+    position: relative;
+    overflow: auto;
+    height: 100%;
+  }
+  
+  .content-layout {
+    position: relative;
+    display: flex;
+  }
+  
+  .content-canvas {
+    position: relative;
+    background-color: #f0f0f0; /* 或根据需要调整 */
+  }
+  
+  .content-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+  }
+  

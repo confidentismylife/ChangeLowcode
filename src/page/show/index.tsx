@@ -1,35 +1,29 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ShowBox from './shoubox';
+import SelectBox from './SelectBox'; // 导入选择框组件
 import { Button, Layout, Menu } from 'antd';
 import { useComponentsStore } from '../editor/stores/component-total';
-import bgImage from '../../assets/bg.png'; // 根据相对路径导入图片
+import bgImage from '../../assets/bg.png';
 import axios from 'axios';
-
+import DataShow from '../dataShow/index'
 const { Header, Content, Sider } = Layout;
 
-// 定义 Component 接口，表示一个组件的结构
 interface Component {
-  name: string; // 组件的名称，用于唯一标识
-  props: any; // 组件的属性
-  styles?: CSSProperties; // 组件的样式，可选
-  desc: string; // 组件的描述
-  children?: Component[]; // 子组件，可选
-  parentId?: number; // 父组件的 ID，可选
-  uindex?: string | number; // 组件的索引，可选
-  project?: string | number; // 组件所属的项目，可选
+  name: string;
+  props: any;
+  styles?: CSSProperties;
+  desc: string;
+  children?: Component[];
+  parentId?: number;
+  uindex?: string | number;
+  project?: string | number;
 }
 
-// 定义 FormObject 接口，表示一个表单对象的结构
 interface FormObject {
-  fname: string; // 表单对象的名称
-  componentForm: Component[]; // 表单对象包含的组件列表
-  isTemplate: boolean; // 表单对象是否为模板
-}
-
-// 定义 ObjectTotal 接口，表示状态管理的整体结构
-interface ObjectTotal {
-  objectTotal: FormObject[]; // 所有表单对象的列表
+  fname: string;
+  componentForm: Component[];
+  isTemplate: boolean;
 }
 
 export default function Show() {
@@ -37,9 +31,9 @@ export default function Show() {
   const [data, setData] = useState<FormObject[]>([]);
   const { objectTotal } = useComponentsStore();
   const [select, setSelect] = useState(1);
+  const [isSelectBoxVisible, setSelectBoxVisible] = useState(false); // 控制选择框的显示状态
 
   useEffect(() => {
-    // 更新数据
     setData(objectTotal);
   }, [objectTotal]);
 
@@ -47,7 +41,7 @@ export default function Show() {
     const selectedItem = data?.find(item => item.fname === schema);
     if (selectedItem) {
       localStorage.setItem(`${schema}`, JSON.stringify(selectedItem));
-      navigate(`/schema/${schema}`); // 导航到对应的路由
+      navigate(`/schema/${schema}`);
     }
   };
 
@@ -55,11 +49,48 @@ export default function Show() {
     axios.get('http://localhost/api/data')
       .then(response => {
         console.log('Response from Koa server:', response.data);
-        // 在这里处理响应数据
+        
+        // 发送获取到的数据到主程序
+        window.parent.postMessage(response.data, '*'); // 向父窗口发送数据
       })
       .catch(error => {
         console.error('Error:', error);
       });
+  };
+
+  const messageHandler = (event: MessageEvent) => {
+    // 可选：验证消息来源
+    if (event.origin !== 'http://localhost:3000') {
+      return;
+    }
+
+    console.log('Received message from iframe:', event.data);
+    
+    if (event.data === '你好') {
+      alert('接收到来自 iframe 的消息: ' + event.data);
+
+      // 发送通知回 iframe
+      event.source.postMessage('已收到你的消息！', event.origin);
+    }
+  };
+
+  // 监听来自 iframe 的消息
+  useEffect(() => {
+    // 添加事件监听器
+    window.addEventListener('message', messageHandler);
+  
+    // 清理事件监听器
+    return () => {
+      window.removeEventListener('message', messageHandler);
+    };
+  }, []);
+
+  const handleSelect = (selectedItem: FormObject) => {
+    // 在这里发送选中的数据给主程序
+    console.log('Selected item:', selectedItem);
+    // 发送选中的数据给主程序
+    window.parent.postMessage(selectedItem, '*');
+
   };
 
   return (
@@ -100,10 +131,17 @@ export default function Show() {
                 >
                   + 发送请求
                 </Button>
+                <Button
+                  type="primary"
+                  className="ml-auto absolute left-72 top-6"
+                  onClick={() => setSelectBoxVisible(true)} // 打开选择框
+                >
+                  + 选择 ShowBox
+                </Button>
                 {data?.map((item) => (
                   <ShowBox
                     imageSrc={bgImage}
-                    key={item.fname} // 使用 fname 作为唯一键
+                    key={item.fname}
                     title={item.fname}
                     onNavigate={() => handleNavigate(item.fname)}
                   />
@@ -114,16 +152,24 @@ export default function Show() {
                 {data?.filter(item => item.isTemplate).map((item) => (
                   <ShowBox
                     imageSrc={bgImage}
-                    key={item.fname} // 使用 fname 作为唯一键
+                    key={item.fname}
                     title={item.fname}
                     onNavigate={() => handleNavigate(item.fname)}
                   />
                 ))}
               </div>
             ) : select === 3 ? (
-              <div>性能监控内容</div>
+              <>
+                <div>性能监控内容</div>
+                <DataShow></DataShow>
+              </>
             ) : null}
-            {/* 在这里添加 Outlet 以切换对应路由内容 */}
+            <SelectBox
+              visible={isSelectBoxVisible}
+              onClose={() => setSelectBoxVisible(false)} // 关闭选择框
+              data={data}
+              onSelect={handleSelect} // 选择项回调
+            />
           </Content>
         </Layout>
       </Layout>

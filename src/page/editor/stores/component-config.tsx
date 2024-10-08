@@ -25,6 +25,8 @@ import ImageDev from '../materials/Image/dev';
 import ImageProd from '../materials/Image/prod';
 import WaterfallDev from '../materials/Waterfull/dev';
 import WaterfallProd from '../materials/Waterfull/prod';
+import CarouselDev from '../materials/Carousel/dev';
+import ProductCardDev from '../materials/ProductCard/dev';
 
 export interface ComponentSetter {
     name: string;
@@ -611,7 +613,115 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
             dev: WaterfallDev,
             prod: {}
 
-        }
+        },
+       Carousel : {
+            name: 'Carousel',
+            defaultProps: {
+                images: [], // 图片地址列表
+                interval: 3000, // 自动播放间隔（毫秒）
+                width: '600', // 宽度
+                height: '400', // 高度
+                showIndicators: true, // 是否显示指示器
+                showArrows: true, // 是否显示左右箭头
+            },
+            desc: '轮播图',
+            dev: CarouselDev, // 假设你有一个 CarouselDev 组件
+            prod: {}, // 假设你有一个 CarouselProd 组件
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber', // 数字输入框
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber', // 数字输入框
+                },
+                {
+                    name: 'styles',
+                    label: '自定义样式',
+                    type: 'styleEditor', // 样式编辑器
+                }
+            ],
+            setter: [
+                {
+                    name: 'images',
+                    label: '图片地址列表',
+                    type: 'inputList', // 列表输入
+                },
+                {
+                    name: 'interval',
+                    label: '自动播放间隔',
+                    type: 'inputNumber', // 数字输入框
+                },
+                {
+                    name: 'showIndicators',
+                    label: '是否显示指示器',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 布尔值
+                        { label: 'false', value: false }
+                    ]
+                },
+                {
+                    name: 'showArrows',
+                    label: '是否显示左右箭头',
+                    type: 'select',
+                    options: [
+                        { label: 'true', value: true }, // 布尔值
+                        { label: 'false', value: false }
+                    ]
+                }
+            ]
+        },
+        ProductCard: {
+            name: 'ProductCard',
+            defaultProps: {
+                productName: '默认商品名称',
+                productPrice: '¥0.00',
+                productImage: 'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
+            },
+            desc: "ProductCard",
+            dev: ProductCardDev,
+            prod: {},
+            setter: [
+                {
+                    name: 'productName',
+                    label: '商品名称',
+                    type: 'input', // 输入商品名称
+                },
+                {
+                    name: 'productPrice',
+                    label: '商品价格',
+                    type: 'input', // 输入商品价格
+                },
+                {
+                    name: 'productImage',
+                    label: '商品图片',
+                    type: 'input', // 输入商品图片 URL
+                },
+                {
+                    name: 'actions',
+                    label: '操作按钮',
+                    type: 'input', // 输入 JSON 格式的操作按钮，例如: '[{"label":"购买","icon":"shopping"}]'
+                },
+            ],
+            stylesSetter: [
+                {
+                    name: 'width',
+                    label: '宽度',
+                    type: 'inputNumber', // 输入宽度值
+                },
+                {
+                    name: 'height',
+                    label: '高度',
+                    type: 'inputNumber', // 输入高度值
+                }
+            ],
+        },
+        
+        
     },
     registerComponent: (name, componentConfig) => set((state) => {
         return {

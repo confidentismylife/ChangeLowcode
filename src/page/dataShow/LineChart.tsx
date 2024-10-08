@@ -1,58 +1,114 @@
-import React, { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import React, { useEffect, useState } from 'react';
+import { addTrackingEvent, getTrackingData } from '../../utils/trackingManager'; // 确保路径正确
 
-const LineChart = () => {
-    const chartRef = useRef(null); // 用于获取图表 DOM 元素
+const TrackingDataTable = () => {
+    const [trackingData, setTrackingData] = useState({
+        clickEvents: [],
+        imageLoadEvents: [],
+        otherEvents: [],
+    });
 
-    // 假设的首屏加载时间数据
-    const loadingTimeData = [
-        [20, 120],
-        [50, 200],
-        [40, 50],
-    ];
+    // 模拟埋点数据更新
+    const fetchTrackingData = () => {
+        const data = getTrackingData();
+
+        // 这里可以将数据分配到不同的事件类型
+        // 这里假设只处理 loadingTime 的情况，你可以根据需要添加其他事件
+        const clickEvents = data.map((event, index) => ({
+            id: index + 1,
+            eventType: 'click_event', // 示例事件类型
+            success: true, // 模拟成功，实际情况可从 data 中获取
+            timestamp: event.timestamp,
+        }));
+
+        // 更新状态
+        setTrackingData({
+            clickEvents,
+            imageLoadEvents: [], // 假设没有图像加载事件
+            otherEvents: [], // 假设没有其他事件
+        });
+    };
 
     useEffect(() => {
-        // 初始化 ECharts 实例
-        const myChart = echarts.init(chartRef.current);
+        fetchTrackingData(); // 初始加载数据
 
-        // 图表配置
-        const option = {
-            xAxis: {
-                type: 'value',
-                name: '时间 (ms)', // 设置横坐标的名称
-                min: 0, // 设置横坐标最小值
-                max: 100, // 设置横坐标最大值
-            },
-            yAxis: {
-                type: 'value',
-                name: '加载时间 (ms)', // 设置纵坐标的名称
-                min: 0,
-                max: 250,
-            },
-            series: [
-                {
-                    data: loadingTimeData, // 使用假设的数据
-                    type: 'line',
-                    smooth: true, // 平滑折线
-                },
-            ],
-        };
-
-        // 设置配置项
-        myChart.setOption(option);
+        const interval = setInterval(() => {
+            fetchTrackingData(); // 每 5 秒更新数据
+        }, 5000);
 
         // 清理函数
         return () => {
-            myChart.dispose(); // 在组件卸载时销毁图表实例
+            clearInterval(interval); // 在组件卸载时清除定时器
         };
-    }, [loadingTimeData]);
+    }, []);
 
     return (
-        <div
-            ref={chartRef}
-            style={{ width: '100%', height: '400px' }} // 设置图表的大小
-        />
+        <div>
+            <h2>点击事件</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>事件 ID</th>
+                        <th>事件类型</th>
+                        <th>是否成功</th>
+                        <th>时间戳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {trackingData.clickEvents.map((event) => (
+                        <tr key={event.id}>
+                            <td>{event.id}</td>
+                            <td>{event.eventType}</td>
+                            <td>{event.success ? '成功' : '失败'}</td>
+                            <td>{new Date(event.timestamp).toLocaleString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2>图片加载事件</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>图片 URL</th>
+                        <th>是否成功</th>
+                        <th>时间戳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {trackingData.imageLoadEvents.map((event, index) => (
+                        <tr key={index}>
+                            <td>{event.imageUrl}</td>
+                            <td>{event.success ? '成功' : '失败'}</td>
+                            <td>{new Date(event.timestamp).toLocaleString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2>其他事件</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>事件 ID</th>
+                        <th>事件类型</th>
+                        <th>是否成功</th>
+                        <th>时间戳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {trackingData.otherEvents.map((event) => (
+                        <tr key={event.id}>
+                            <td>{event.id}</td>
+                            <td>{event.eventType}</td>
+                            <td>{event.success ? '成功' : '失败'}</td>
+                            <td>{new Date(event.timestamp).toLocaleString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 };
 
-export default LineChart;
+export default TrackingDataTable;

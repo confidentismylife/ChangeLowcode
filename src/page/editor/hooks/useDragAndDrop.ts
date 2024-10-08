@@ -65,31 +65,40 @@ export function useDragAndDrop(id?: number) {
         // 获取鼠标的位置
         const mouseX = event.clientX;
         const mouseY = event.clientY;
-
+    
         // 获取 Page 组件的边界信息
         const pageRect = event.currentTarget.getBoundingClientRect();
         const pageX = pageRect.left; // Page 组件左边距
         const pageY = pageRect.top; // Page 组件上边距
-
+    
         // 计算鼠标相对于 Page 组件的位置
         const relativeX = mouseX - pageX;
         const relativeY = mouseY - pageY;
-
-        // 获取拖拽的元素数据并解析
-        const droppedItem: DroppedItem = JSON.parse(event.dataTransfer.getData('text/plain'));
-
+    
+        let droppedItem: DroppedItem;
+        try {
+            // 获取拖拽的元素数据并解析
+            const droppedData = event.dataTransfer.getData('text/plain');
+            console.log('Dropped data:', droppedData); // 输出调试数据
+            droppedItem = JSON.parse(droppedData); // 尝试解析数据
+        } catch (error) {
+            console.error("Failed to parse dropped data:", error);
+            return; // 解析失败，直接返回
+        }
+    
         // 根据拖拽的类型进行处理
         if (droppedItem.dragType === 'move') {
             const component = getComponentById(droppedItem.id, components);
+    
             setTimeout(() => {
                 if (component) {
                     // 获取移动组件的宽高
                     const componentWidth = component.props.width || 100; // 默认宽度
                     const componentHeight = component.props.height || 100; // 默认高度
-    
+                    
                     // 重新计算相对于 Page 的位置
-                    const adjustedX = relativeX - componentWidth / 4; // 使鼠标在新组件中心
-                    const adjustedY = relativeY - componentHeight / 4;
+                    const adjustedX = relativeX - componentWidth / 2; // 使鼠标在新组件中心
+                    const adjustedY = relativeY - componentHeight / 2;
     
                     // 吸附逻辑
                     const snapX = Math.round(adjustedX / 10) * 10; // 吸附到最近的 10 像素
@@ -116,25 +125,25 @@ export function useDragAndDrop(id?: number) {
             
         } else {
             const config = componentConfig[droppedItem.name];
-            console.log(config)
+            console.log(config);
             // 检查 config 是否存在
             if (config) {
                 // 获取新组件的宽高
                 const componentWidth = config.defaultProps?.width || 100; // 默认宽度
                 const componentHeight = config.defaultProps?.height || 100; // 默认高度
-
+    
                 // 计算相对于 Page 的位置以使鼠标在新组件中心
                 const adjustedX = relativeX - componentWidth / 4;
                 const adjustedY = relativeY - componentHeight / 4;
-
+    
                 // 吸附逻辑
                 const snapX = Math.round(adjustedX / 10) * 10; // 吸附到最近的 10 像素
                 const snapY = Math.round(adjustedY / 10) * 10;
-
+    
                 // 处理边界，确保不会放置在负坐标上
                 const boundedX = Math.max(0, snapX);
                 const boundedY = Math.max(0, snapY);
-
+    
                 addComponent({
                     id: new Date().getTime(),
                     name: droppedItem.name,
@@ -143,15 +152,16 @@ export function useDragAndDrop(id?: number) {
                     x: boundedX, // 使用调整后的 X 位置
                     y: boundedY, // 使用调整后的 Y 位置
                 }, id);
-
+    
                 // 更新位置
-                updatePosition(id, 0, 'your-container-class-name'); // 传入合适的参数
+                updatePosition(id, 0, 'edit-area'); // 确保容器类名正确
             } else {
-                console.log(config,'config找不到')
+                console.log(config, 'config 找不到');
                 console.error(`Component config for type ${droppedItem.name} is undefined`);
             }
         }
     }, [addComponent, deleteComponent, components, componentConfig, id]);
+    
 
     return {
         handleDragOver,
