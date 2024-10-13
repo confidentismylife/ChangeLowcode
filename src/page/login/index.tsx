@@ -1,57 +1,24 @@
-import { Button, Input, message } from "antd";
+import { Button, Input } from "antd";
 import img from "../../../public/logo.png";
 import whiteimg from "../../../public/white_on_trans.png";
-import { useCallback, useEffect, useState } from "react";
-import { debounce } from "lodash";
-import { useNavigate } from "react-router-dom";
-import { userLogin, userZuche } from "../../utils/axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 导入 useNavigate
 
 const Login = () => {
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  // 设置默认的账号和密码
+  const [formData, setFormData] = useState({ username: "admin", password: "123456" });
   const [isRegistering, setIsRegistering] = useState(false); // 用于切换注册和登录
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 使用 useNavigate 创建导航函数
 
-  useEffect(() => {
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = () => {
+    // 这里可以添加你想要的逻辑，例如打印表单数据
     console.log(formData);
-  }, [formData]);
-
-  const handleInputChange = useCallback(
-    debounce((field, value) => {
-      setFormData((prev) => ({ ...prev, [field]: value }));
-    }, 500),
-    []
-  );
-
-  const handleSubmit = async () => {
-    try {
-      let res;
-      if (isRegistering) {
-        // 注册逻辑
-        res = await userZuche(formData.username, formData.password); // 使用 await 等待注册响应
-        console.log(res);
-        if (res.code === 201) {
-          message.success("注册成功");
-          localStorage.setItem("username", formData.username);
-          localStorage.setItem("accessToken", res.accessToken); // 保存 accessToken
-          localStorage.setItem("refreshToken", res.refreshToken); // 保存 refreshToken
-          navigate("/show");
-        }
-      } else {
-        // 登录逻辑
-        res = await userLogin(formData.username, formData.password); // 使用 await 等待登录响应
-        console.log(res);
-        if (res.code === 200) {
-          message.success("登录成功");
-          // 假设后端返回的 JWT 存储在 res.data.accessToken 中
-          localStorage.setItem("accessToken", res.accessToken); // 保存 accessToken
-          localStorage.setItem("refreshToken", res.refreshToken); // 保存 refreshToken
-          navigate("/show");
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("操作失败，请检查用户名和密码");
-    }
+    // 直接跳转到 show 界面
+    navigate("/show");
   };
 
   return (
@@ -69,12 +36,14 @@ const Login = () => {
           <Input
             placeholder="输入账号"
             className="mb-4 border border-gray-300 rounded-md shadow-sm"
+            value={formData.username} // 绑定默认用户名
             onChange={(e) => handleInputChange("username", e.target.value)}
           />
           <Input
             placeholder="输入密码"
             className="mb-4 border border-gray-300 rounded-md shadow-sm"
             type="password"
+            value={formData.password} // 绑定默认密码
             onChange={(e) => handleInputChange("password", e.target.value)}
           />
           <div className="flex flex-col w-full">
