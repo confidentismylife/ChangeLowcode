@@ -702,10 +702,16 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
                     type: 'input', // 输入商品图片 URL
                 },
                 {
-                    name: 'actions',
-                    label: '操作按钮',
-                    type: 'input', // 输入 JSON 格式的操作按钮，例如: '[{"label":"购买","icon":"shopping"}]'
+                    name: 'skdopen',
+                    label: '开启监控',
+                    type: 'select', // 输入商品图片 URL
+                    options: [
+                        { label: '打开', value: true }, // 布尔值
+                        { label: '关闭', value: false }
+                    ]
+
                 },
+             
             ],
             stylesSetter: [
                 {

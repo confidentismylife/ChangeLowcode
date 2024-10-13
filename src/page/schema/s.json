@@ -1,0 +1,30 @@
+{
+    username: "admin",
+    password: "123456"
+    Forms: {
+        xiangmu1:{
+            biao1:{
+                {
+                    id: 1,
+                    name: 'Page',
+                    props: {},
+                    desc: '页面',
+                  }
+            },
+            biao2:{
+                {
+                    id: 1,
+                    name: 'Page',
+                    props: {},
+                    desc: '页面',
+                  }
+            }
+        },
+        xiangmu2:{
+            
+        },
+        xiangmu3:{
+            
+        }
+    }
+}

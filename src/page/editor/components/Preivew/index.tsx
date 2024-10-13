@@ -38,7 +38,6 @@ export function Preview() {
                             }, args);
                         } else if (action.type === 'componentMethod') {
                             const targetComponent = componentRefs.current[action.config.componentId];
-
                             if (targetComponent) {
                                 targetComponent[action.config.method]?.(...args);
                             }

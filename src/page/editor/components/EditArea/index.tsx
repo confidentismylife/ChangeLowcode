@@ -123,7 +123,7 @@ export function EditArea() {
     return (
         <div
             ref={editAreaRef}
-            className="h-[100%] edit-area overflow-auto"
+            className="h-[100%] edit-area overflow-auto z-0"
             style={{ boxSizing: 'border-box', paddingRight: '17px', paddingBottom: '17px' }}
             onMouseOver={handleMouseOver}
             onMouseLeave={() => {

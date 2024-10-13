@@ -16,7 +16,7 @@ export function Setting({ onToggle }: SettingProps) {
     if (!curComponentId) return null;
 
     return (
-        <div className=" z-50 h-full flex flex-col bg-gray-100 p-4 rounded-lg shadow-l ">
+        <div className=" z-[1000] h-full flex flex-col bg-gray-100 p-4 rounded-lg shadow-l  ">
             <Segmented
                 value={key}
                 onChange={setKey}

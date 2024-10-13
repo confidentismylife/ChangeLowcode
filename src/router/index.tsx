@@ -6,12 +6,17 @@ import Edit from '../page/editor/index';
 import Show from '../page/show/index';
 import SchemaPage from '../page/schema/index'; // 新增的页面组件
 import DataShow from '../page/dataShow'; // 新增的页面组件
+import Login from '../page/login/index';
 const router = createHashRouter([
   {
     path: '/',
+    element: <Login />,
+  },
+  {
+    path: '/show',
     element: <Show />,
     children: [
-      { path: '/datashow', element: <DataShow  /> },
+      { path: 'datashow', element: <DataShow  /> },
 
     ]
   },
