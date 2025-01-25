@@ -57,6 +57,7 @@ export function ComponentStyle() {
   }
 
   function valueChange(changeValues: CSSProperties) {
+    console.log(changeValues)
     if (curComponentId) {
         updateComponentStyles(curComponentId, changeValues);
     }

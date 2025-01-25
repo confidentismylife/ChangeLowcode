@@ -1,66 +1,83 @@
 import { Button, Input } from "antd";
 import img from "../../../public/logo.png";
-import whiteimg from "../../../public/white_on_trans.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // 导入 useNavigate
+import { useNavigate } from "react-router-dom";
+import { UserOutlined, LockOutlined } from '@ant-design/icons/lib/icons';
 
 const Login = () => {
-  // 设置默认的账号和密码
   const [formData, setFormData] = useState({ username: "admin", password: "123456" });
-  const [isRegistering, setIsRegistering] = useState(false); // 用于切换注册和登录
-  const navigate = useNavigate(); // 使用 useNavigate 创建导航函数
+  const [isRegistering, setIsRegistering] = useState(false);
+  const navigate = useNavigate();
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: 'username' | 'password', value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = () => {
-    // 这里可以添加你想要的逻辑，例如打印表单数据
     console.log(formData);
-    // 直接跳转到 show 界面
     navigate("/show");
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-screen w-full flex flex-col">
-      {/* 标题区域 */}
-      <div className="w-full h-[80px] flex items-center justify-start bg-gray-800 shadow-lg p-4">
-        <img src={whiteimg} className="w-[8%] h-auto mr-2" alt="Logo" />
-        <div className="text-2xl font-bold text-white">ChangeLowCode</div>
+    <div className="min-h-screen bg-[#f1f2f3]">
+      {/* 导航栏 */}
+      <div className="w-full h-[64px] bg-white flex items-center justify-between px-8 fixed top-0 z-50 shadow-sm">
+        <div className="flex items-center">
+          <img src={img} className="h-[26px] mr-3" alt="Logo" />
+          <span className="text-[#18191c] text-lg font-medium">
+            ChangeLowCode
+          </span>
+        </div>
       </div>
 
-      <div className="flex-grow flex items-center justify-center bg-gray-100 p-4">
-        {/* 登录框 */}
-        <div className="w-full max-w-xs bg-white shadow-md rounded-lg flex flex-col items-center justify-center p-8">
-          <img src={img} className="w-[60%] h-auto mb-4" alt="Logo" />
-          <Input
-            placeholder="输入账号"
-            className="mb-4 border border-gray-300 rounded-md shadow-sm"
-            value={formData.username} // 绑定默认用户名
-            onChange={(e) => handleInputChange("username", e.target.value)}
-          />
-          <Input
-            placeholder="输入密码"
-            className="mb-4 border border-gray-300 rounded-md shadow-sm"
-            type="password"
-            value={formData.password} // 绑定默认密码
-            onChange={(e) => handleInputChange("password", e.target.value)}
-          />
-          <div className="flex flex-col w-full">
+      {/* 主要内容区域 */}
+      <div className="pt-[64px] min-h-screen flex flex-col items-center justify-center px-6">
+        <div className="w-full max-w-[440px] mx-auto bg-white rounded-lg p-10 shadow-sm">
+          <div className="text-center mb-8">
+            <h1 className="text-[24px] font-bold text-[#18191c] mb-3">
+              {isRegistering ? "注册账号" : "登录账号"}
+            </h1>
+            <p className="text-[14px] text-[#61666d]">
+              {isRegistering ? "欢迎加入 ChangeLowCode" : "欢迎回来，请登录您的账号"}
+            </p>
+          </div>
+          
+          <div className="space-y-6">
+            <Input
+              placeholder="请输入账号"
+              className="h-[44px] text-[14px] rounded-lg border-[#e3e5e7] hover:border-[#00aeec] focus:border-[#00aeec] transition-colors"
+              value={formData.username}
+              onChange={(e) => handleInputChange("username", e.target.value)}
+              prefix={<UserOutlined className="text-[#9499a0]" />}
+            />
+            
+            <Input.Password
+              placeholder="请输入密码"
+              className="h-[44px] text-[14px] rounded-lg border-[#e3e5e7] hover:border-[#00aeec] focus:border-[#00aeec] transition-colors"
+              value={formData.password}
+              onChange={(e) => handleInputChange("password", e.target.value)}
+              prefix={<LockOutlined className="text-[#9499a0]" />}
+            />
+
             <Button
               type="primary"
-              className="mb-4 w-full bg-blue-600 hover:bg-blue-700 transition duration-200"
+              className="w-full h-[44px] text-[16px] rounded-lg bg-[#00aeec] hover:bg-[#00b5f5] border-none font-medium"
               onClick={handleSubmit}
             >
               {isRegistering ? "注册" : "登录"}
             </Button>
-            <Button
-              type="default"
-              className="w-full text-blue-600 border border-blue-600 hover:bg-blue-600 hover:text-white transition duration-200"
-              onClick={() => setIsRegistering(!isRegistering)} // 切换登录和注册状态
-            >
-              {isRegistering ? "切换到登录" : "切换到注册"}
-            </Button>
+
+            <div className="flex justify-between items-center text-[14px] text-[#61666d]">
+              <button
+                className="hover:text-[#00aeec] transition-colors"
+                onClick={() => setIsRegistering(!isRegistering)}
+              >
+                {isRegistering ? "已有账号？立即登录" : "没有账号？立即注册"}
+              </button>
+              <a href="#" className="hover:text-[#00aeec] transition-colors">
+                忘记密码
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -19,25 +19,29 @@ export function Preview() {
             if (eventConfig) {
                 props[event.name] = (...args: any[]) => {
                     eventConfig?.actions?.forEach((action: ActionConfig) => {
-                        if (action.type === 'goToLink') {
+                        if (action.type === "goToLink") {
                             window.location.href = action.url;
-                        } else if (action.type === 'showMessage') {
-                            if (action.config.type === 'success') {
+                        } else if (action.type === "showMessage") {
+                            if (action.config.type === "success") {
                                 message.success(action.config.text);
-                            } else if (action.config.type === 'error') {
+                            } else if (action.config.type === "error") {
                                 message.error(action.config.text);
                             }
-                        } else if (action.type === 'customJS') {
-                            const func = new Function('context', 'args', action.code);
-                            func({
-                                name: component.name,
-                                props: component.props,
-                                showMessage(content: string) {
-                                    message.success(content);
-                                }
-                            }, args);
-                        } else if (action.type === 'componentMethod') {
-                            const targetComponent = componentRefs.current[action.config.componentId];
+                        } else if (action.type === "customJS") {
+                            const func = new Function("context", "args", action.code);
+                            func(
+                                {
+                                    name: component.name,
+                                    props: component.props,
+                                    showMessage(content: string) {
+                                        message.success(content);
+                                    },
+                                },
+                                args
+                            );
+                        } else if (action.type === "componentMethod") {
+                            const targetComponent =
+                                componentRefs.current[action.config.componentId];
                             if (targetComponent) {
                                 targetComponent[action.config.method]?.(...args);
                             }
@@ -59,7 +63,7 @@ export function Preview() {
 
             // Set component styles using x and y properties
             const style = {
-                position: 'absolute', // Absolute positioning
+                position: "absolute", // Absolute positioning
                 left: component.x ?? 0, // Default x position
                 top: component.y ?? 0, // Default y position
                 ...component.styles, // Merge other styles
@@ -72,14 +76,14 @@ export function Preview() {
                     id: component.id,
                     name: component.name,
                     styles: style, // Pass styles to the component
-                    ref: (ref: Record<string, any>) => { 
+                    ref: (ref: Record<string, any>) => {
                         if (ref) {
                             componentRefs.current[component.id] = ref;
                         }
                     },
                     ...config.defaultProps,
                     ...component.props,
-                    ...handleEvent(component) // Handle events
+                    ...handleEvent(component), // Handle events
                 },
                 renderComponents(component.children || [])
             );
@@ -89,7 +93,12 @@ export function Preview() {
     return (
         <div
             className="preview-container"
-            style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
+            style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+            }}
         >
             {renderComponents(components)}
         </div>
