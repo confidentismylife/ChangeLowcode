@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { useComponentsShow } from "../../stores/component-show";
 import { useComponentsStore } from "../../stores/component-total";
 import axios from "axios";
+import { useComponentConfigStore } from '../../stores/component-config';
+import { exportHTML } from '../../../../utils/exportHTML';
+
 export function Header() {
   const { mode, setMode, setCurComponentId, components, clearComponents } =
     useComponetsStore();
@@ -27,6 +30,7 @@ export function Header() {
   const [name, setName] = useState("");
   const [pm, setpm] = useState("");
   const [isTemplate, setIsTemplate] = useState(false); // 存储是否设置为模板的状态
+  const { componentConfig } = useComponentConfigStore();
 
   useAddRemoteComponentConfig(remoteUrlReact);
   // useAddRemoteComponentConfigVue(remoteUrlVue);
@@ -96,6 +100,13 @@ export function Header() {
     clearComponents();
   };
 
+  const handleExport = () => {
+    exportHTML({
+      components,
+      componentConfig
+    });
+  };
+
   return (
     <div className="w-full h-full">
       <div className="h-full flex justify-between items-center px-[20px] bg-gray-900 text-white shadow-lg">
@@ -147,6 +158,13 @@ export function Header() {
             className="px-4 py-2"
           >
             加载远程 Vue 组件
+          </Button>
+
+          <Button
+            type="primary"
+            onClick={handleExport}
+          >
+            导出HTML
           </Button>
         </Space>
       </div>

@@ -1,13 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path'; // 导入 path 模块
+
 export default defineConfig({
   plugins: [react()],
   base: '/ChangeLowcode/', // 确保 base 路径正确
+  optimizeDeps: {
+    exclude: ['fsevents'],
+    esbuildOptions: {
+      platform: 'browser',
+      supported: {
+        'dynamic-import': true
+      },
+    }
+  },
   build: {
     outDir: 'dist', // 确保输出目录正确
     assetsDir: 'assets', // 确保资源目录正确
     rollupOptions: {
+      external: ['fsevents'],
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
@@ -22,11 +33,13 @@ export default defineConfig({
         }
       }
     },
+    target: 'esnext',
     chunkSizeWarningLimit: 2000
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src') // 配置路径别名
+      '@': resolve(__dirname, 'src'),
+      'fsevents': resolve(__dirname, 'src/utils/empty-module.ts')
     }
   },
   server: {

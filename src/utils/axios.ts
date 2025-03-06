@@ -7,7 +7,7 @@ import axios, {
 
 interface PendingTask {
   config: AxiosRequestConfig;
-  resolve: Function;
+  resolve: (value: any) => void;
 }
 
 let refreshing = false;
@@ -110,8 +110,10 @@ axiosInstance.interceptors.response.use(
         if (res) {
           // 处理队列中的请求
           queue.forEach(({ config, resolve }) => {
-            config.headers["Authorization"] =
-              "Bearer " + localStorage.getItem("accessToken");
+            if (config.headers) {
+              config.headers["Authorization"] =
+                "Bearer " + localStorage.getItem("accessToken");
+            }
             resolve(axiosInstance(config));
           });
           queue.length = 0; // 清空队列
