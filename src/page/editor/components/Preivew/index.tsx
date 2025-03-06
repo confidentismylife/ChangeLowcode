@@ -4,7 +4,7 @@ import { Component, useComponetsStore } from "../../stores/components";
 import { message } from "antd";
 import { ActionConfig } from "../Setting/ActionModal";
 
-export function Preview() {
+const Preview: React.FC = () => {
     const { components } = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
 
@@ -13,7 +13,7 @@ export function Preview() {
     function handleEvent(component: Component) {
         const props: Record<string, any> = {};
 
-        componentConfig[component.name].events?.forEach((event) => {
+        componentConfig[component.name]?.events?.forEach((event) => {
             const eventConfig = component.props[event.name];
 
             if (eventConfig) {
@@ -56,37 +56,56 @@ export function Preview() {
     function renderComponents(components: Component[]): React.ReactNode {
         return components.map((component: Component) => {
             const config = componentConfig?.[component.name];
+            
+            if (!config) {
+                console.error(`No config found for component: ${component.name}`);
+                return null;
+            }
 
-            if (!config?.prod) {
+            if (!config.prod) {
+                console.error(`No prod component found for: ${component.name}`);
+                return null;
+            }
+
+            // 检查prod组件的类型
+            if (typeof config.prod !== 'function' && typeof config.prod !== 'string') {
+                console.error(`Invalid prod component type for ${component.name}:`, config.prod);
                 return null;
             }
 
             // Set component styles using x and y properties
             const style = {
-                position: "absolute", // Absolute positioning
-                left: component.x ?? 0, // Default x position
-                top: component.y ?? 0, // Default y position
-                ...component.styles, // Merge other styles
+                position: "absolute" as const,
+                left: component.x ?? 0,
+                top: component.y ?? 0,
+                ...component.styles,
             };
 
-            return React.createElement(
-                config.prod,
-                {
-                    key: component.id,
-                    id: component.id,
-                    name: component.name,
-                    styles: style, // Pass styles to the component
-                    ref: (ref: Record<string, any>) => {
-                        if (ref) {
-                            componentRefs.current[component.id] = ref;
-                        }
-                    },
-                    ...config.defaultProps,
-                    ...component.props,
-                    ...handleEvent(component), // Handle events
+            const props = {
+                key: component.id,
+                id: component.id,
+                name: component.name,
+                styles: style,
+                ref: (ref: any) => {
+                    if (ref) {
+                        componentRefs.current[component.id] = ref;
+                    }
                 },
-                renderComponents(component.children || [])
-            );
+                ...config.defaultProps,
+                ...component.props,
+                ...handleEvent(component),
+            };
+
+            try {
+                return React.createElement(
+                    config.prod,
+                    props,
+                    component.children?.length ? renderComponents(component.children) : null
+                );
+            } catch (error) {
+                console.error(`Error rendering component ${component.name}:`, error);
+                return null;
+            }
         });
     }
 
@@ -104,3 +123,5 @@ export function Preview() {
         </div>
     );
 }
+
+export default Preview;

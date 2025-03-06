@@ -2,6 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #00aeec;
+  --primary-hover: #00b5f5;
+  --bg-white: #ffffff;
+  --text-regular: #18191c;
+  --text-secondary: #61666d;
+  --text-light: #9499a0;
+}
+
+/* B站风格的布局 */
+.bili-layout {
+  @apply min-h-screen bg-[#f1f2f3];
+}
+
+/* B站风格的导航栏 */
+.bili-header {
+  @apply fixed top-0 left-0 right-0 h-[64px] px-6 z-50;
+  background: var(--bg-white);
+  border-bottom: 1px solid #e3e5e7;
+}
+
+/* B站风格的按钮 */
+.bili-button {
+  @apply px-4 h-8 rounded-md text-sm font-medium transition-all;
+  background: var(--primary);
+  color: white;
+}
+
+.bili-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* B站风格的卡片 */
+.bili-card {
+  @apply bg-white rounded-lg p-4 transition-all;
+  border: 1px solid #e3e5e7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.bili-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 174, 236, 0.08);
+  transform: translateY(-2px);
+  border-color: var(--primary);
+}
+
+/* B站风格的图标按钮 */
+.bili-icon-btn {
+  @apply p-2 rounded-full transition-all text-[#61666d];
+}
+
+.bili-icon-btn:hover {
+  @apply text-[#00aeec] bg-[#00aeec10];
+}
+
+/* B站风格的搜索框 */
+.bili-search {
+  @apply h-9 rounded-lg px-3 text-sm transition-all;
+  background: #f1f2f3;
+  border: 1px solid #e3e5e7;
+  color: var(--text-regular);
+}
+
+.bili-search:hover,
+.bili-search:focus {
+  border-color: var(--primary);
+  background: #ffffff;
+}
+
+/* B站风格的侧边栏 */
+.bili-sidebar {
+  @apply fixed left-0 top-[64px] bottom-0 w-[200px] bg-white transition-all;
+  border-right: 1px solid #e3e5e7;
+}
+
+.bili-sidebar-item {
+  @apply flex items-center px-5 h-12 text-[#61666d] cursor-pointer transition-all;
+}
+
+.bili-sidebar-item:hover {
+  @apply text-[#00aeec] bg-[#f6f7f8];
+}
+
+.bili-sidebar-item.active {
+  @apply text-[#00aeec] bg-[#f6f7f8];
+  position: relative;
+}
+
+.bili-sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--primary);
+}
+
 .monaco-editor .suggestions-widget {
-    z-index: 10000;
+  z-index: 10000;
 }

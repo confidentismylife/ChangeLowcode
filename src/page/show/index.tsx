@@ -1,214 +1,200 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ShowBox from "./shoubox";
-import SelectBox from "./SelectBox"; // 导入选择框组件
-import { Avatar, Button, FloatButton, Layout, Menu, Tooltip } from "antd";
-import { useComponentsStore } from "../editor/stores/component-total";
-import bgImage from "../../assets/cc.png";
-import axios from "axios";
-import DataShow from "../dataShow/index";
+import { Layout, Input, Badge, Avatar } from "antd";
 import CustomMenu from "./CustomMenu";
-const { Header, Content, Sider } = Layout;
-import { userEnv } from "../../utils/axios";
-import CustomerServiceOutlined from "@ant-design/icons";
-import CommentOutlined from "@ant-design/icons";
-import { SearchOutlined } from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import { CloudDownloadOutlined } from "@ant-design/icons";
-import { CheckOutlined } from "@ant-design/icons";
-interface Component {
-  name: string;
-  props: any;
-  styles?: CSSProperties;
-  desc: string;
-  children?: Component[];
-  parentId?: number;
-  uindex?: string | number;
-  project?: string | number;
-}
+import ShowBox from "./shoubox";
 
-interface FormObject {
-  fname: string;
-  componentForm: Component[];
-  isTemplate: boolean;
-}
+// 导入图标
+import BellOutlined from "@ant-design/icons/lib/icons/BellOutlined";
+import SearchOutlined from "@ant-design/icons/lib/icons/SearchOutlined";
+import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
+
+const { Header, Content } = Layout;
 
 export default function Show() {
   const navigate = useNavigate();
-  const [data, setData] = useState<FormObject[]>([]);
-  const { objectTotal } = useComponentsStore();
   const [select, setSelect] = useState(1);
-  const [isSelectBoxVisible, setSelectBoxVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-  useEffect(() => {
-    setData(objectTotal);
-  }, [objectTotal]);
+  // 示例数据 - 我的应用
+  const [myApps] = useState([
+    {
+      fname: "电商后台管理",
+      desc: "包含商品管理、订单管理等功能的后台系统",
+      updateTime: "2024-01-20",
+      creator: "张三",
+      status: "published"
+    },
+    {
+      fname: "数据可视化大屏",
+      desc: "实时数据展示和监控的可视化平台",
+      updateTime: "2024-01-18",
+      creator: "李四",
+      status: "draft"
+    },
+    {
+      fname: "CRM系统",
+      desc: "客户关系管理系统，支持客户跟进和销售管理",
+      updateTime: "2024-01-15",
+      creator: "王五",
+      status: "published"
+    }
+  ]);
 
-  const handleNavigate = (schema: string | number) => {
-    const selectedItem = data?.find((item) => item.fname === schema);
-    if (selectedItem) {
-      localStorage.setItem(`${schema}`, JSON.stringify(selectedItem));
-      navigate(`/schema/${schema}`);
+  // 示例数据 - 模板中心
+  const [templates] = useState([
+    {
+      fname: "后台管理系统模板",
+      desc: "快速搭建企业级后台管理系统的模板",
+      updateTime: "2024-01-19",
+      creator: "系统模板",
+      status: "published"
+    },
+    {
+      fname: "数据大屏模板",
+      desc: "适用于各类数据可视化展示的大屏模板",
+      updateTime: "2024-01-17",
+      creator: "系统模板",
+      status: "published"
+    }
+  ]);
+
+  // 渲染内容区域
+  const renderContent = () => {
+    switch (select) {
+      case 1:
+        return (
+          <>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-[#18191c]">我的应用</h2>
+              <p className="text-[#61666d] mt-1">管理和编辑你的低代码应用</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {myApps.map((item, index) => (
+                <div key={index} className="bili-card group">
+                  <div className="h-32 bg-gradient-to-br from-[#e1f3ff] to-[#f0f8ff] rounded-md mb-4"></div>
+                  <h3 className="text-lg font-medium text-[#18191c] group-hover:text-[#00aeec] transition-colors">
+                    {item.fname}
+                  </h3>
+                  <p className="text-[#61666d] text-sm mt-1 line-clamp-2">{item.desc}</p>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#e3e5e7]">
+                    <div className="flex items-center text-sm text-[#9499a0]">
+                      <span>{item.creator}</span>
+                      <span className="mx-2">·</span>
+                      <span>{item.updateTime}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        className="px-3 py-1 text-sm rounded border border-[#e3e5e7] text-[#61666d] hover:bg-[#f6f7f8] transition-colors"
+                        onClick={() => navigate("/edit")}
+                      >
+                        编辑
+                      </button>
+                      <button className="px-3 py-1 text-sm rounded border border-[#00aeec] text-[#00aeec] hover:bg-[#00aeec10] transition-colors">
+                        预览
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-[#18191c]">模板中心</h2>
+              <p className="text-[#61666d] mt-1">快速开始，选择一个模板开始创建</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {templates.map((item, index) => (
+                <div key={index} className="bili-card group">
+                  <div className="h-32 bg-gradient-to-br from-[#e1f3ff] to-[#f0f8ff] rounded-md mb-4"></div>
+                  <h3 className="text-lg font-medium text-[#18191c] group-hover:text-[#00aeec] transition-colors">
+                    {item.fname}
+                  </h3>
+                  <p className="text-[#61666d] text-sm mt-1 line-clamp-2">{item.desc}</p>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#e3e5e7]">
+                    <div className="flex items-center text-sm text-[#9499a0]">
+                      <span>{item.creator}</span>
+                      <span className="mx-2">·</span>
+                      <span>{item.updateTime}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        className="px-3 py-1 text-sm rounded border border-[#00aeec] text-[#00aeec] hover:bg-[#00aeec10] transition-colors"
+                        onClick={() => navigate("/edit")}
+                      >
+                        使用此模板
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      case 3:
+        return (
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-[#18191c]">性能监控</h2>
+            <p className="text-[#61666d] mt-1">实时监控应用性能指标</p>
+            <div className="mt-4 p-6 bg-white rounded-lg border border-[#e3e5e7]">
+              <p className="text-center text-[#61666d]">性能监控功能开发中...</p>
+            </div>
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
-  const handleSendRequest = () => {
-    const res = userEnv();
-    console.log(res);
-  };
-
-  const messageHandler = (event: MessageEvent) => {
-    if (event.origin !== "http://localhost:3000") {
-      return;
-    }
-
-    console.log("Received message from iframe:", event.data);
-
-    if (event.data === "你好") {
-      alert("接收到来自 iframe 的消息: " + event.data);
-      event.source.postMessage("已收到你的消息！", event.origin);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("message", messageHandler);
-    return () => {
-      window.removeEventListener("message", messageHandler);
-    };
-  }, []);
-
-  const handleSelect = (selectedItem: FormObject) => {
-    console.log("Selected item:", selectedItem);
-    window.parent.postMessage(selectedItem, "*");
-  };
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-  const [open, setOpen] = useState<boolean>(true);
   return (
-    <Layout className="h-screen">
-      <Header className="flex items-center justify-between bg-gray-900 text-white shadow-lg p-4">
-        <div className="text-2xl font-bold">ChangeLowCode</div>
+    <Layout className="bili-layout">
+      <Header className="bili-header flex items-center justify-between">
         <div className="flex items-center">
-          {/* 头像区域 */}
-          <div className="relative right-4">
+          <h1 className="text-[#18191c] text-xl font-bold mr-8">低代码平台</h1>
+          <button 
+            className="bili-button flex items-center"
+            onClick={() => navigate("/edit")}
+          >
+            <PlusOutlined className="mr-1" />
+            创建应用
+          </button>
+        </div>
+        <div className="flex items-center gap-6">
+          <Input
+            prefix={<SearchOutlined className="text-[#9499a0]" />}
+            placeholder="搜索应用..."
+            className="bili-search w-[240px]"
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+          />
+          <div className="flex items-center gap-4">
+            <Badge count={3} color="#00aeec">
+              <BellOutlined className="bili-icon-btn text-xl" />
+            </Badge>
             <Avatar
-              size={40}
-              src="https://res.cloudinary.com/dru9kzzjh/image/upload/v1721460717/y9vrtpt8f050f7krizfa.jpg"
-              className="border-2 border-white rounded-full shadow-md"
+              size={36}
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+              className="cursor-pointer ring-2 ring-[#e3e5e7] hover:ring-[#00aeec] transition-all"
             />
-            {/* 可以在这里添加一个状态指示器，比如在线状态 */}
-            <span className="absolute bottom-2 right-0   block w-2 h-2 bg-green-500 rounded-full"></span>
           </div>
         </div>
       </Header>
 
-      <Layout>
-        <Sider
-          width={100}
-          className="bg-gray-800 text-white"
-          collapsible
-          collapsed={collapsed}
-          onCollapse={toggleCollapsed}
-          collapsedWidth={48}
-        >
-          <CustomMenu
-            select={select}
-            setSelect={setSelect}
-            collapsed={collapsed}
-          />
-        </Sider>
+      <CustomMenu
+        select={select}
+        setSelect={setSelect}
+        collapsed={collapsed}
+      />
 
-        <div className="w-10 flex flex-col items-center space-y-4 mt-5">
-          <Tooltip
-            title={<span className="text-black">创建新应用</span>}
-            placement="right" // 设置提示框在按钮的右侧
-            overlayInnerStyle={{ backgroundColor: "white" }}
-          >
-            <Button
-              type="default"
-              shape="default"
-              icon={<PlusOutlined />}
-              size="small"
-              onClick={() => {
-                navigate("/edit");
-              }}
-              className="w-8 h-8 bg-gray-300 text-black hover:bg-gray-400 active:shadow-lg transition duration-200 ease-in-out"
-            />
-          </Tooltip>
-
-          <Tooltip
-            title={<span className="text-black">发送</span>}
-            placement="right"
-            overlayInnerStyle={{ backgroundColor: "white" }}
-          >
-            <Button
-              type="default"
-              shape="default"
-              onClick={handleSendRequest}
-              icon={<CloudDownloadOutlined />}
-              size="small"
-              className="w-8 h-8 bg-gray-300 text-black hover:bg-gray-400 active:shadow-lg transition duration-200 ease-in-out"
-            />
-          </Tooltip>
-
-          <Tooltip
-            title={<span className="text-black">选择应用</span>}
-            placement="right"
-            overlayInnerStyle={{ backgroundColor: "white" }}
-          >
-            <Button
-              type="default"
-              shape="default"
-              icon={<CheckOutlined />}
-              onClick={() => setSelectBoxVisible(true)}
-              size="small"
-              className="w-8 h-8 bg-gray-300 text-black hover:bg-gray-400 active:shadow-lg transition duration-200 ease-in-out"
-            />
-          </Tooltip>
-        </div>
-
-        <Layout className="p-6 bg-gray-200 ">
-          <Content className="rounded-lg shadow-xl flex center overflow-y-visible relative bg-gray-100 ">
-            {select === 1 ? (
-              <div className="overflow-auto flex flex-wrap ml-10 mt-10">
-                {data?.map((item) => (
-                  <ShowBox
-                    imageSrc={bgImage}
-                    key={item.fname}
-                    title={item.fname}
-                    onNavigate={() => handleNavigate(item.fname)}
-                  />
-                ))}
-              </div>
-            ) : select === 2 ? (
-              <div className="overflow-auto flex flex-wrap ml-10 mt-10">
-                {data
-                  ?.filter((item) => item.isTemplate)
-                  .map((item) => (
-                    <ShowBox
-                      imageSrc={bgImage}
-                      key={item.fname}
-                      title={item.fname}
-                      onNavigate={() => handleNavigate(item.fname)}
-                    />
-                  ))}
-              </div>
-            ) : select === 3 ? (
-              <>
-                <DataShow />
-              </>
-            ) : null}
-            <SelectBox
-              visible={isSelectBoxVisible}
-              onClose={() => setSelectBoxVisible(false)}
-              data={data}
-              onSelect={handleSelect}
-            />
-          </Content>
-        </Layout>
+      <Layout className="ml-[200px] mt-[64px] min-h-[calc(100vh-64px)] bg-[#f1f2f3] p-6">
+        <Content>
+          {renderContent()}
+        </Content>
       </Layout>
     </Layout>
   );
